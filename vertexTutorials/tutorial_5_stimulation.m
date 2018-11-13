@@ -6,10 +6,9 @@
 %
 %% Tissue parameters
 % Our tissue parameters are similar to the previous tutorials:
-
-TissueParams.X = 2200; %2000
+TissueParams.X = 2200;
 TissueParams.Y = 400;
-TissueParams.Z = 1240; %650
+TissueParams.Z = 1240;
 TissueParams.neuronDensity = 2000;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
@@ -17,17 +16,17 @@ TissueParams.maxZOverlap = [-1 , -1];
 
 %%
 % However, we need to set the number of layers to 3 and make sure we set
-% the layer boundaries to create a 200 micron thick layer 3, a 300 micron
+% the layer boundaries to create a 790 micron thick layer 3, a 300 micron
 % thick layer 4 and a 150 micron thick layer 5:
-
 TissueParams.numLayers = 3;
 TissueParams.layerBoundaryArr = [1240, 450, 150, 0];
 
 %%
-% As the total Z-depth of the model is 650, we specify the top boundary of our
-% layer three (the model's first layer) to be 650 microns, then the top of
+% As the total Z-depth of the model is 1240, we specify the top boundary of our
+% layer three (the model's first layer) to be 1240 microns, then the top of
 % layer 4 to be 450 microns, and the top of layer 5 to be 150 microns.
 %
+
 %% Neuron group parameters
 % Next we need to set up our neuron groups. Groups are allocated to a
 % layer, and we will include pyramidal cells and basket interneurons in layer 3,
@@ -38,7 +37,6 @@ TissueParams.layerBoundaryArr = [1240, 450, 150, 0];
 % Basket cells and spiny stellate cells share the same morphology, but have
 % different firing dynamics (see Tomsett et al. 2014 for the firing responses of
 % the cell models).
-
 NeuronParams(1).somaLayer = 1; % Pyramidal cells in layer 3
 NeuronParams(1).modelProportion = 0.4;
 NeuronParams(1).neuronModel = 'adex';
@@ -136,7 +134,6 @@ NeuronParams(2).R_A = 150;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
 
-
 NeuronParams(3) = NeuronParams(2); % spiny stellates same morphology as basket
 NeuronParams(3).somaLayer = 2;     % but in layer 4
 NeuronParams(3).modelProportion = 0.3;
@@ -210,27 +207,31 @@ NeuronParams(6).modelProportion = 0.02;
 
 %%
 % We will also need to provide the neurons with some input:
-
 NeuronParams(1).Input(1).inputType = 'i_ou';
 NeuronParams(1).Input(1).meanInput = 330;
 NeuronParams(1).Input(1).stdInput = 80;
 NeuronParams(1).Input(1).tau = 2;
+
 NeuronParams(2).Input(1).inputType = 'i_ou';
 NeuronParams(2).Input(1).meanInput = 200;
 NeuronParams(2).Input(1).stdInput = 20;
 NeuronParams(2).Input(1).tau = 1;
+
 NeuronParams(3).Input(1).inputType = 'i_ou';
 NeuronParams(3).Input(1).meanInput = 230;
 NeuronParams(3).Input(1).stdInput = 30;
 NeuronParams(3).Input(1).tau = 2;
+
 NeuronParams(4).Input(1).inputType = 'i_ou';
 NeuronParams(4).Input(1).meanInput = 200;
 NeuronParams(4).Input(1).stdInput = 20;
 NeuronParams(4).Input(1).tau = 1;
+
 NeuronParams(5).Input(1).inputType = 'i_ou';
 NeuronParams(5).Input(1).meanInput = 830;
 NeuronParams(5).Input(1).stdInput = 160;
 NeuronParams(5).Input(1).tau = 2;
+
 NeuronParams(6).Input(1).inputType = 'i_ou';
 NeuronParams(6).Input(1).meanInput = 200;
 NeuronParams(6).Input(1).stdInput = 20;
@@ -241,7 +242,6 @@ NeuronParams(6).Input(1).tau = 1;
 % several layers, the numbers can be specified per layer. Parameters that
 % can specified on a per-layer basis are |axonArborRadius|,
 % |axonArborLimit|, and |numConnectionsToAllFromOne|: 
-
 ConnectionParams(1).axonArborRadius = [300, 200, 100];
 ConnectionParams(1).axonArborLimit = [600, 400, 200];
 
@@ -295,7 +295,6 @@ ConnectionParams(1).synapseReleaseDelay = 0.5;
 
 %%
 % And now we set the connectivity parameters for the other neuron groups:
-
 ConnectionParams(2).axonArborRadius = [150, 0, 0];
 ConnectionParams(2).axonArborLimit = [300, 0, 0];
 ConnectionParams(2).numConnectionsToAllFromOne = ...
@@ -385,11 +384,14 @@ ConnectionParams(6).synapseReleaseDelay = 0.5;
 % there are no connections between groups (e.g. neurons in group 6 make no
 % connections to neurons in groups 1-4), the relevant cells in the connection
 % parameters are set to be empty matrices.
+
 %% Set up stimulation field
 %Stimulation amplitude 100 mV
-[TissueParams.StimulationField, TissueParams.StimulationModel] = invitroSliceStim('catvisblend1.stl',100);
+[TissueParams.StimulationField, TissueParams.StimulationModel] = ... 
+  invitroSliceStim('catvisblend1.stl',100);
 TissueParams.StimulationOn = [1000:50:1500];% 20 Hz stimulation
 TissueParams.StimulationOff = [1025:50:1525];% pulse width of 25 ms
+
 %% Recording and simulation settings
 % These are set in the same way as previous tutorials. This time we
 % position the electrodes so as to cover the larger z-depth of the model.
@@ -416,12 +418,11 @@ RecordingSettings.sampleRate = 1000;
 
 SimulationSettings.simulationTime = 2500;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim = false;
+SimulationSettings.parallelSim = true;
 
 %% Run simulation and load results
 % We run the simulation and load results as before. Note that this simulation
 % will take some time, as it contains more than 10,000 spiking neurons.
-
 [params, connections, electrodes] = ...
   initNetwork(TissueParams, NeuronParams, ConnectionParams, ...
               RecordingSettings, SimulationSettings);
@@ -431,7 +432,6 @@ Results = loadResults(RecordingSettings.saveDir);
 
 %% Plot the results
 % Using these parameters, we obtain the following spike raster:
-
 rasterParams.colors = {'k','m','k','m','k','m'};
 rasterParams.groupBoundaryLines = 'c';
 rasterParams.title = 'Tutorial 5 Spike Raster';
@@ -440,12 +440,8 @@ rasterParams.ylabel = 'Neuron ID';
 rasterParams.figureID = 1;
 rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 
-
-
 %%
 % Plotting the LFP and weight change during stimulation
-
-
 figure;plot(Results.LFP(10,:), 'LineWidth', 2);
 axis([100 3000 -0.025 0.05]) % only plot from 100 ms to remove large initial spike
 set(gcf,'color','w');
@@ -456,30 +452,29 @@ ylabel('LFP (mV)', 'FontSize', 16)
 yyaxis right;
 plot(mean(Results.weights{4}(1:100,:)), 'LineWidth',2);
 ylabel('Mean synaptic weight (pA)');
-%% Plot the weight change of all cells
 
-time1weights = getSparseConnectivityWeights(Results.weights_arr{1},Results.syn_arr,Results.params.TissueParams.N);%
-time2weights = getSparseConnectivityWeights(Results.weights_arr{2},Results.syn_arr,Results.params.TissueParams.N);%
+%% Plot the weight change of all cells
+time1weights = getSparseConnectivityWeights(Results.weights_arr{1},Results.syn_arr,Results.params.TissueParams.N);
+time2weights = getSparseConnectivityWeights(Results.weights_arr{2},Results.syn_arr,Results.params.TissueParams.N);
 figure;imagesc(time2weights-time1weights);
 
-%
+%%
 % Finally let's check the mean firing rate of each neuron group using the
 % |groupRates()| function. We will ask for the rates to be calculated from
 % 100 ms to 500 ms, so that spikes in the initial model population spike are not
 % counted.
-
 firingRates = groupRates(Results, 100, 500);
-%%
-% If you have experienced any problems when trying to run this tutorial,
-% or if you have any suggestions for improvements, please email Richard
-% Tomsett: r _at_ autap _dot_ se
 
-%% References
-% Binzegger T, Douglas RJ, Martin KAC (2004) A quantitative map of the circuit
-% of cat primary visual cortex. J Neurosci 24(39):8441?8453
-%
-% Tomsett RJ, Ainsworth M, Thiele A, Sanayei M, Chen X et al. (2014)
-% Virtual Electrode Recording Tool for EXtracellular potentials (VERTEX):
-% comparing multi-electrode recordings from simulated and biological
-% mammalian cortical tissue, Brain Structure and Function.
+%%	
+% If you have experienced any problems when trying to run this tutorial,	
+% or if you have any suggestions for improvements, please email Richard	
+% Tomsett: r _at_ autap _dot_ se	
+ %% References	
+% Binzegger T, Douglas RJ, Martin KAC (2004) A quantitative map of the circuit	
+% of cat primary visual cortex. J Neurosci 24(39):8441?8453	
+%	
+% Tomsett RJ, Ainsworth M, Thiele A, Sanayei M, Chen X et al. (2014)	
+% Virtual Electrode Recording Tool for EXtracellular potentials (VERTEX):	
+% comparing multi-electrode recordings from simulated and biological	
+% mammalian cortical tissue, Brain Structure and Function.	
 % doi:10.1007/s00429-014-0793-x
