@@ -12,10 +12,10 @@ public class Startup : MonoBehaviour {
 
     public GameObject tissueLayer;
     public GameObject neuron;
+    public GameObject electrode;
     public List<GameObject> tissueLayerList;
     public SpikeData SpikeTimes { get; set; }
 
-    private bool finishedInitialization = false;
     private float startTime;
     private int currentSpikeIndex;
     public Text timeText;
@@ -46,6 +46,36 @@ public class Startup : MonoBehaviour {
             GameObject obj = Instantiate(neuron, new Vector3(Constants.TissueData.somaPositionArr[i,0], Constants.TissueData.somaPositionArr[i, 1], Constants.TissueData.somaPositionArr[i, 2]), Quaternion.identity);
             obj.GetComponent<Neuron>().SetID(i+1);
             Constants.NeuronList[i] = obj;
+        }
+    }
+
+    void CreateElectrodes()
+    {
+        //First compute largest and smallest LFP values
+
+        float smallestVal = 100;
+        float largestVal = -100;
+        for(int i = 0; i < Constants.LFPData.LFPValues.GetLength(0); i++)
+        {
+            for(int j = 0; j < Constants.LFPData.LFPValues.GetLength(1); j++)
+            {
+                if(Constants.LFPData.LFPValues[i,j] < smallestVal)
+                {
+                    smallestVal = Constants.LFPData.LFPValues[i, j];
+                }
+                if(Constants.LFPData.LFPValues[i, j] > largestVal)
+                {
+                    largestVal = Constants.LFPData.LFPValues[i, j];
+                }
+            }
+        }
+
+        Constants.ElectrodeList = new GameObject[(int)Constants.RecordingData.numElectrodes];
+        for (int i = 0; i < Constants.RecordingData.numElectrodes; i++)
+        {
+            GameObject obj = Instantiate(electrode, new Vector3(Constants.RecordingData.meaPosList[i].x, Constants.RecordingData.meaPosList[i].y, Constants.RecordingData.meaPosList[i].z), Quaternion.identity);
+            obj.GetComponent<Electrode>().SetElectrode(i, largestVal, smallestVal);
+            Constants.ElectrodeList[i] = obj;
         }
     }
 
@@ -103,29 +133,34 @@ public class Startup : MonoBehaviour {
         dynamic Vertexparams = ParseJson(instance, "params.json");
         dynamic Vertexspikes = ParseJson(instance, "spikes.json");
         dynamic myTissueParams = Vertexparams.TissueParams;
+        dynamic myRecordingSettings = Vertexparams.RecordingSettings;
 
         //GameObject tissueSlice = GameObject.Find("TissueSlice");
         Constants.TissueData = new TissueParams(myTissueParams);
+        Constants.RecordingData = new RecordingSettings(myRecordingSettings);
+        Constants.LFPData = new LocalFieldPotential(VertexLFP);
 
         this.SpikeTimes = new SpikeData(Vertexspikes);
         this.startTime = Time.time;
         this.currentSpikeIndex = 0;
         Constants.timeScale = timeScale;
-        this.finishedInitialization = true;
     }
 	// Use this for initialization
 	void Start () {
+        Constants.finishedInitialization = false;
         tissueLayerList = new List<GameObject>();
         InitializeObjectsFromJson("2");
         CreateTissueLayers();
         SetTissueLayerColors();
         SetNeuronGroupColors();
         CreateNeurons();
+        CreateElectrodes();
+        Constants.finishedInitialization = true;
     }
 
     void FixedUpdate()
     {
-        if (finishedInitialization)
+        if (Constants.finishedInitialization)
         {
             //List<int> IDs = new List<int>();
             float endTime = this.startTime + (Time.fixedDeltaTime * timeScale);

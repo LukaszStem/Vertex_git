@@ -6,10 +6,13 @@ public static class Constants {
 
     public static List<Color> NeuronColorList { get; set; }
     public static TissueParams TissueData { get; set; }
-
     public static GameObject[] NeuronList { get; set; }
+    public static GameObject[] ElectrodeList { get; set; }
 
+    public static RecordingSettings RecordingData { get; set; }
+    public static LocalFieldPotential LFPData { get; set; }
     public static float timeScale { get; set; }
+    public static bool finishedInitialization { get; set; }
 
     public static void ChangeColor(GameObject obj, float alphaValue, float r = 0, float g = 0, float b = 0)
     {

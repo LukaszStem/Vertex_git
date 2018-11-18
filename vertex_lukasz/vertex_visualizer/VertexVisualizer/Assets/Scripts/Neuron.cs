@@ -34,10 +34,6 @@ public class Neuron : MonoBehaviour {
     {
         for(int i = 1; i < Constants.TissueData.groupBoundaryIDArr.Count; i++)
         {
-            if(this.NeuronID > 1000)
-            {
-                Debug.Log("hi");
-            }
             if(this.NeuronID < Constants.TissueData.groupBoundaryIDArr[i])
             {
                 this.SpikingColor = Constants.NeuronColorList[i-1];
