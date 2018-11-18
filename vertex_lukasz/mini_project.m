@@ -389,10 +389,10 @@ ConnectionParams(6).synapseReleaseDelay = 0.5;
 
 %% Set up stimulation field
 %Stimulation amplitude 100 mV
-[TissueParams.StimulationField, TissueParams.StimulationModel] = ... 
-  invitroSliceStim('catvisblend1.stl',100);
-TissueParams.StimulationOn = [1000:50:1500];% 20 Hz stimulation
-TissueParams.StimulationOff = [1025:50:1525];% pulse width of 25 ms
+%[TissueParams.StimulationField, TissueParams.StimulationModel] = ... 
+%  invitroSliceStim('catvisblend1.stl',100);
+%TissueParams.StimulationOn = [1000:50:1500];% 20 Hz stimulation
+%TissueParams.StimulationOff = [1025:50:1525];% pulse width of 25 ms
 
 %% Recording and simulation settings
 % These are set in the same way as previous tutorials. This time we
@@ -420,7 +420,7 @@ RecordingSettings.sampleRate = 1000;
 
 SimulationSettings.simulationTime = 2500;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim = true;
+SimulationSettings.parallelSim = false;
 
 %% Run simulation and load results
 % We run the simulation and load results as before. Note that this simulation
@@ -459,6 +459,9 @@ ylabel('Mean synaptic weight (pA)');
 time1weights = getSparseConnectivityWeights(Results.weights_arr{1},Results.syn_arr,Results.params.TissueParams.N);
 time2weights = getSparseConnectivityWeights(Results.weights_arr{2},Results.syn_arr,Results.params.TissueParams.N);
 figure;imagesc(time2weights-time1weights);
+title('Synaptic connectivity changes')
+xlabel('Neuron ID') 
+ylabel('Neuron ID') 
 
 %%
 % Finally let's check the mean firing rate of each neuron group using the
