@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dffdeabec16395940800b58d7ffffc52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spikeDuration: 0.5
+  spikeDuration: 0.1
   emissionIntensity: 15
   emission: 0
 --- !u!135 &135241493068466414

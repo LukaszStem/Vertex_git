@@ -9,7 +9,7 @@ public class Electrode : MonoBehaviour
     public float maxSizeScale;
     private float maxLFPValue;
     private float minLFPValue;
-    private float currentValue;
+    private float currentTime;
     private int electrodeID;
 
     public void SetElectrode(int id, float maxValue, float minValue)
@@ -20,6 +20,7 @@ public class Electrode : MonoBehaviour
         this.minLFPValue = minValue;
         this.material = GetComponent<Renderer>().material;
         this.gameObject.transform.SetParent(GameObject.Find("ElectrodeGroup").transform);
+        this.currentTime = Time.time;
     }
     // Use this for initialization
     void Start()
@@ -30,12 +31,15 @@ public class Electrode : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Constants.finishedInitialization)
+        if (Constants.finishedInitialization)
         {
-            int currentTimeStep = Convert.ToInt32(Math.Floor(Time.time));
+            this.currentTime += Time.deltaTime * Constants.timeScale;
+            int currentTimeStep = Convert.ToInt32(Math.Floor(this.currentTime));
             //Debug.Log("Current Time Step:" + currentTimeStep.ToString());
             //Debug.Log("ElectrodeID:" + ((int)(this.electrodeID)).ToString());
-            float tmpLFP = Constants.LFPData.LFPValues[this.electrodeID, currentTimeStep];
+            float tmpLFP = this.LFP;
+            if (currentTimeStep < Constants.LFPData.LFPValues.GetLength(1))
+                tmpLFP = Constants.LFPData.LFPValues[this.electrodeID, currentTimeStep];
             if (tmpLFP != this.LFP)
             {
                 this.LFP = tmpLFP;

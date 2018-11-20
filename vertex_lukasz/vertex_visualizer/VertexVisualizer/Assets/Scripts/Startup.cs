@@ -18,8 +18,15 @@ public class Startup : MonoBehaviour {
 
     private float startTime;
     private int currentSpikeIndex;
-    public Text timeText;
     public float timeScale = 1;
+
+    //-------UI--------
+    public Text timeText;
+    public Text statusText;
+    private bool holdingDownKey;
+    private List<string> keys = new List<string>();
+    private string keyHeldDownPrev;
+    private string keyHeldDown;
     dynamic ParseJson(string instance, string filename)
     {
         string myFileName = "C:\\Users\\wassa\\vertex\\" + instance + filename;
@@ -147,7 +154,13 @@ public class Startup : MonoBehaviour {
     }
 	// Use this for initialization
 	void Start () {
+        this.keyHeldDown = "0";
+        this.keyHeldDownPrev = "0";
+        keys = new List<string>();
+        for(int i = 0; i < 10; i++)
+            keys.Add(i.ToString());
         Constants.finishedInitialization = false;
+        this.holdingDownKey = false;
         tissueLayerList = new List<GameObject>();
         InitializeObjectsFromJson("2");
         CreateTissueLayers();
@@ -160,8 +173,26 @@ public class Startup : MonoBehaviour {
 
     void FixedUpdate()
     {
+        if(!Constants.finishedInitialization)
+        {
+            //ShowPopup.Instantiate();
+            //ShowPopup popup = new ShowPopup();
+            //popup.
+            if(Input.anyKeyDown)
+            {
+                foreach(string key in keys)
+                {
+                    if(Input.GetKeyDown(key))
+                    {
+                        keyHeldDown = key;
+                        break;
+                    }
+                }
+            }
+        }
         if (Constants.finishedInitialization)
         {
+            int wut = this.SpikeTimes.times.GetLength(0);
             //List<int> IDs = new List<int>();
             float endTime = this.startTime + (Time.fixedDeltaTime * timeScale);
             //float totalTime = endTime - this.startTime;
@@ -169,7 +200,7 @@ public class Startup : MonoBehaviour {
             //float currentNeuronTime = this.SpikeTimes.times[this.currentSpikeIndex, 1];
             //float currentNeuronTimeEnd = currentNeuronTime + Time.fixedDeltaTime;
 
-            while (this.currentSpikeIndex < this.SpikeTimes.times.Length)
+            while (this.currentSpikeIndex < this.SpikeTimes.times.GetLength(0))
             {
                 if(this.SpikeTimes.times[this.currentSpikeIndex, 1] < endTime)
                 {

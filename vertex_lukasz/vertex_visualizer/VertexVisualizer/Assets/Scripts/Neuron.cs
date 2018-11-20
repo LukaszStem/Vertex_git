@@ -13,6 +13,7 @@ public class Neuron : MonoBehaviour {
     public float emissionIntensity;
     public float emission;
     private bool justSpiked;
+    private float currentTime;
     // Use this for initialization
     void Start () {
 		
@@ -42,6 +43,7 @@ public class Neuron : MonoBehaviour {
         }
         Constants.ChangeColor(this.gameObject, this.SpikingColor.a, this.SpikingColor.r, this.SpikingColor.g, this.SpikingColor.b);
         this.material.SetColor("_EmissionColor", this.SpikingColor * Mathf.LinearToGammaSpace(0f));
+        currentTime = Time.time;
     }
 
     public void spike()
