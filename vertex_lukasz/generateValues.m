@@ -1,5 +1,5 @@
-function [LFPValues] =  generateValues( frequencyInHz )
-
+%function [LFPValues] =  generateValues( frequencyInHz )
+frequencyInHz = 10
 %% VERTEX Mini-Project
 % Please read the readme file for more details
 %
@@ -391,15 +391,15 @@ ConnectionParams(6).synapseReleaseDelay = 0.5;
 
 %% Set up stimulation field
 %Stimulation amplitude 100 mV
-[TissueParams.StimulationField, TissueParams.StimulationModel] = ... 
-  invitroSliceStim('catvisblend1.stl',100);
-
-startStimulationTime = 1000;
-endStimulationTime = 1500;
-pulseWidth = 25;
-stimulationInterval = 1000/frequencyInHz;
-
-remainder = mod(endStimulationTime-startStimulationTime, stimulationInterval);
+% [TissueParams.StimulationField, TissueParams.StimulationModel] = ... 
+%   invitroSliceStim('catvisblend1.stl',100);
+% 
+% startStimulationTime = 1000;
+% endStimulationTime = 1500;
+% pulseWidth = 25;
+% stimulationInterval = 1000/frequencyInHz;
+% 
+% remainder = mod(endStimulationTime-startStimulationTime, stimulationInterval);
 
 % if remainder ~= 0 
 %     ME = MException('Difference in stimulate / (1000/frequencyInHz) != 0');
@@ -408,8 +408,8 @@ remainder = mod(endStimulationTime-startStimulationTime, stimulationInterval);
 %TissueParams.StimulationOn = [1000:50:1500];% 20 Hz stimulation
 %TissueParams.StimulationOff = [1025:50:1525];% pulse width of 25 ms
 
-TissueParams.StimulationOn = [startStimulationTime:stimulationInterval:endStimulationTime];
-TissueParams.StimulationOff = [startStimulationTime+pulseWidth:stimulationInterval:endStimulationTime+pulseWidth];% pulse width of 25 ms
+%TissueParams.StimulationOn = [startStimulationTime:stimulationInterval:endStimulationTime];
+%TissueParams.StimulationOff = [startStimulationTime+pulseWidth:stimulationInterval:endStimulationTime+pulseWidth];% pulse width of 25 ms
 
 %% Recording and simulation settings
 % These are set in the same way as previous tutorials. This time we
@@ -417,15 +417,6 @@ TissueParams.StimulationOff = [startStimulationTime+pulseWidth:stimulationInterv
 
 RecordingSettings.saveDir = '~/VERTEX_results_tutorial_5/';
 RecordingSettings.LFP = true;
-%For recording the weights of specific connections at each time step. 
-%We specify the presynaptic neuron IDs we wish to record from, we will
-%receive the weights of all synapses from these cells.
-RecordingSettings.weights_preN_IDs = [1:100];
-%For recording a snapshot of the weights of the entire network, we can
-%specify the simulation step of the time we wish to record the snapshot at.
-%So to calculate the recording step we can do:
-% recordingstep = recordingtime/SimulationSettings.timeStep;
-RecordingSettings.weights_arr = [1 79999];
 [meaX, meaY, meaZ] = meshgrid(0:500:2000, 200, 2200:-100:0);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
@@ -438,6 +429,17 @@ RecordingSettings.sampleRate = 1000;
 SimulationSettings.simulationTime = 2500;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
+
+%For recording the weights of specific connections at each time step. 
+%We specify the presynaptic neuron IDs we wish to record from, we will
+%receive the weights of all synapses from these cells.
+RecordingSettings.weights_preN_IDs = [1:100];
+%For recording a snapshot of the weights of the entire network, we can
+%specify the simulation step of the time we wish to record the snapshot at.
+%So to calculate the recording step we can do:
+% recordingsteps = simulationtime/timestep;
+totalRecordingSteps = SimulationSettings.simulationTime/SimulationSettings.timeStep
+RecordingSettings.weights_arr = [1 totalRecordingSteps];
 
 %% Run simulation and load results
 % We run the simulation and load results as before. Note that this simulation
@@ -505,4 +507,4 @@ LFPValues = Results.LFP;
 % comparing multi-electrode recordings from simulated and biological	
 % mammalian cortical tissue, Brain Structure and Function.	
 % doi:10.1007/s00429-014-0793-x
-end
+%end

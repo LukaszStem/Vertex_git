@@ -1,21 +1,12 @@
 % Assumes a workspace variable "Results" exists
+function [] =  createJson(filename, object)
 
+fprintf("Ecoding object for %s\n", filename);
+jsonText = jsonencode(object);
+fprintf("Creating and writing to %s\n", filename);
+fid = fopen(filename, 'wt');
+fprintf(fid, '%s', jsonText);
+fclose(fid);
+fprintf("Finshed writing to %s\n\n", filename);
 
-
-instance = '2'
-
-spikes_json = jsonencode(Results.spikes)
-fid = fopen(strcat(instance,'spikes.json'), 'wt')
-fprintf(fid, '%s', spikes_json);
-fclose(fid)
-
-LFP_json = jsonencode(Results.LFP)
-fid = fopen(strcat(instance,'LFP.json'), 'wt')
-fprintf(fid, '%s', LFP_json);
-fclose(fid)
-
-params_json = jsonencode(Results.params)
-fid = fopen(strcat(instance,'params.json'), 'wt')
-fprintf(fid, '%s', params_json);
-fclose(fid)
-
+end

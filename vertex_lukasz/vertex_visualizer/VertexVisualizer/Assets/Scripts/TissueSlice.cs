@@ -20,9 +20,10 @@ public class TissueSlice : MonoBehaviour
 
     private List<Color> NeuronColorList { get; set; }
 
-
     private float startTime;
     private int currentSpikeIndex;
+    private int tissueInstance;
+    private float yOffset;
 
     void CreateNeurons()
     {
@@ -30,7 +31,7 @@ public class TissueSlice : MonoBehaviour
         this.NeuronList = new GameObject[(int)this.TissueData.neuronCount];
         for (int i = 0; i < this.TissueData.neuronCount; i++)
         {
-            GameObject obj = Instantiate(neuron, new Vector3(this.TissueData.somaPositionArr[i, 0], this.TissueData.somaPositionArr[i, 1], this.TissueData.somaPositionArr[i, 2]), Quaternion.identity);
+            GameObject obj = Instantiate(neuron, new Vector3(this.TissueData.somaPositionArr[i, 0], this.TissueData.somaPositionArr[i, 1] + yOffset, this.TissueData.somaPositionArr[i, 2]), Quaternion.identity);
             obj.GetComponent<Neuron>().SetID(i + 1);
             this.NeuronList[i] = obj;
         }
@@ -60,7 +61,7 @@ public class TissueSlice : MonoBehaviour
         this.ElectrodeList = new GameObject[(int)this.RecordingData.numElectrodes];
         for (int i = 0; i < this.RecordingData.numElectrodes; i++)
         {
-            GameObject obj = Instantiate(electrode, new Vector3(this.RecordingData.meaPosList[i].x, this.RecordingData.meaPosList[i].y, this.RecordingData.meaPosList[i].z), Quaternion.identity);
+            GameObject obj = Instantiate(electrode, new Vector3(this.RecordingData.meaPosList[i].x, this.RecordingData.meaPosList[i].y + yOffset, this.RecordingData.meaPosList[i].z), Quaternion.identity);
             obj.GetComponent<Electrode>().SetElectrode(i, largestVal, smallestVal);
             this.ElectrodeList[i] = obj;
         }
@@ -105,7 +106,7 @@ public class TissueSlice : MonoBehaviour
             zDepth = this.TissueData.layerBoundaryArr[i] - this.TissueData.layerBoundaryArr[i + 1];
 
             GameObject currentLayer = Instantiate(tissueLayer, new Vector3(xPos, yPos, zPosition - (zDepth / 2)), Quaternion.identity);
-            Vector3 scale = new Vector3(this.TissueData.X, this.TissueData.Y, zDepth);
+            Vector3 scale = new Vector3(this.TissueData.X, this.TissueData.Y + yOffset, zDepth);
             currentLayer.transform.localScale = scale;
 
             tissueLayerList.Add(currentLayer);
@@ -114,27 +115,27 @@ public class TissueSlice : MonoBehaviour
         }
     }
 
-    dynamic ParseJson(string instance, string directory, string filename)
+    dynamic ParseJson(string filename)
     {
-        string myFileName = "C:\\Users\\wassa\\vertex\\" + instance + filename;
+        string myFileName = filename;
         string json = "";
         using (StreamReader r = new StreamReader(myFileName))
         {
             json = r.ReadToEnd();
         }
         int b = json.Length;
-        Debug.Log("Finished parsing through " + instance + filename);
+        Debug.Log("Finished parsing through " + filename);
         dynamic stuff = JsonConvert.DeserializeObject(json);
         Debug.Log("Finished creating dynamic object");
         Debug.Log(json.Length);
         return stuff;
     }
 
-    void InitializeObjectsFromJson(string directory, string instance)
+    void InitializeObjectsFromJson()
     {
-        dynamic VertexLFP = ParseJson(instance, directory, "LFP.json");
-        dynamic Vertexparams = ParseJson(instance, directory, "params.json");
-        dynamic Vertexspikes = ParseJson(instance, directory, "spikes.json");
+        dynamic VertexLFP = ParseJson(FileManager.GetLFPFile(this.tissueInstance));
+        dynamic Vertexparams = ParseJson(FileManager.GetParamsFile(this.tissueInstance));
+        dynamic Vertexspikes = ParseJson(FileManager.GetSpikesFile(this.tissueInstance));
         dynamic myTissueParams = Vertexparams.TissueParams;
         dynamic myRecordingSettings = Vertexparams.RecordingSettings;
 
@@ -148,9 +149,11 @@ public class TissueSlice : MonoBehaviour
         this.currentSpikeIndex = 0;
     }
 
-    public TissueSlice(string directory, string instance)
+    public TissueSlice(int tissueInstance, float yOffset)
     {
-        InitializeObjectsFromJson(directory, instance);
+        this.tissueInstance = tissueInstance;
+        this.yOffset = yOffset;
+        InitializeObjectsFromJson();
         CreateTissueLayers();
         SetTissueLayerColors();
         SetNeuronGroupColors();
