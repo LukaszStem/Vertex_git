@@ -1,3 +1,5 @@
+function [LFPValues] =  generateValues( frequencyInHz )
+
 %% VERTEX Mini-Project
 % Please read the readme file for more details
 %
@@ -389,10 +391,25 @@ ConnectionParams(6).synapseReleaseDelay = 0.5;
 
 %% Set up stimulation field
 %Stimulation amplitude 100 mV
-%[TissueParams.StimulationField, TissueParams.StimulationModel] = ... 
-%  invitroSliceStim('catvisblend1.stl',100);
+[TissueParams.StimulationField, TissueParams.StimulationModel] = ... 
+  invitroSliceStim('catvisblend1.stl',100);
+
+startStimulationTime = 1000;
+endStimulationTime = 1500;
+pulseWidth = 25;
+stimulationInterval = 1000/frequencyInHz;
+
+remainder = mod(endStimulationTime-startStimulationTime, stimulationInterval);
+
+% if remainder ~= 0 
+%     ME = MException('Difference in stimulate / (1000/frequencyInHz) != 0');
+%     thow(ME);
+
 %TissueParams.StimulationOn = [1000:50:1500];% 20 Hz stimulation
 %TissueParams.StimulationOff = [1025:50:1525];% pulse width of 25 ms
+
+TissueParams.StimulationOn = [startStimulationTime:stimulationInterval:endStimulationTime];
+TissueParams.StimulationOff = [startStimulationTime+pulseWidth:stimulationInterval:endStimulationTime+pulseWidth];% pulse width of 25 ms
 
 %% Recording and simulation settings
 % These are set in the same way as previous tutorials. This time we
@@ -409,7 +426,7 @@ RecordingSettings.weights_preN_IDs = [1:100];
 %So to calculate the recording step we can do:
 % recordingstep = recordingtime/SimulationSettings.timeStep;
 RecordingSettings.weights_arr = [1 79999];
-[meaX, meaY, meaZ] = meshgrid(0:500:2000, 200, 700:-100:0);
+[meaX, meaY, meaZ] = meshgrid(0:500:2000, 200, 2200:-100:0);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
@@ -470,6 +487,11 @@ ylabel('Neuron ID')
 % counted.
 firingRates = groupRates(Results, 100, 500);
 
+%% Store local field potentials in workspace 
+%TODO: Have this in a standard array of some sort
+%
+LFPValues = Results.LFP;
+
 %%	
 % If you have experienced any problems when trying to run this code,	
 % or if you have any suggestions for improvements, please email Lukasz	
@@ -483,3 +505,4 @@ firingRates = groupRates(Results, 100, 500);
 % comparing multi-electrode recordings from simulated and biological	
 % mammalian cortical tissue, Brain Structure and Function.	
 % doi:10.1007/s00429-014-0793-x
+end
