@@ -86,10 +86,14 @@ public class TissueSlice : MonoBehaviour
         Color[] colorArr = new Color[] { Color.magenta, Color.cyan, Color.green, Color.blue, Color.yellow, Color.red };
 
         this.NeuronColorList = new List<Color>();
-
         for (int i = 1; i < this.TissueData.groupBoundaryIDArr.Count; i++)
         {
             this.NeuronColorList.Add(colorArr[(i - 1) % colorArr.Length]);
+        }
+
+        if (Constants.NeuronColorList.Count == 0)
+        {
+            Constants.NeuronColorList = this.NeuronColorList;
         }
     }
 
@@ -159,6 +163,35 @@ public class TissueSlice : MonoBehaviour
         SetNeuronGroupColors();
         CreateNeurons();
         CreateElectrodes();
+        Constants.finishedInitialization[tissueInstance] = true;
     }
 
+    void FixedUpdate()
+    {
+        if (Constants.finishedInitialization.TrueForAll(b => b))
+        {
+            int wut = this.SpikeTimes.times.GetLength(0);
+            //List<int> IDs = new List<int>();
+            float endTime = this.startTime + (Time.fixedDeltaTime * Constants.timeScale);
+            //float totalTime = endTime - this.startTime;
+
+            //float currentNeuronTime = this.SpikeTimes.times[this.currentSpikeIndex, 1];
+            //float currentNeuronTimeEnd = currentNeuronTime + Time.fixedDeltaTime;
+
+            while (this.currentSpikeIndex < this.SpikeTimes.times.GetLength(0))
+            {
+                if (this.SpikeTimes.times[this.currentSpikeIndex, 1] < endTime)
+                {
+                    int neuronToSpike = (int)this.SpikeTimes.times[this.currentSpikeIndex, 0];
+                    this.NeuronList[neuronToSpike - 1].GetComponent<Neuron>().spike();
+                    this.currentSpikeIndex++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            this.startTime = endTime;
+        }
+    }
 }

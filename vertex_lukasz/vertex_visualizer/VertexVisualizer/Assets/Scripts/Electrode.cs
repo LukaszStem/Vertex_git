@@ -5,6 +5,7 @@ using System;
 public class Electrode : MonoBehaviour
 {
     private Material material;
+    private TissueParams paramInstance;
     public float LFP;
     public float maxSizeScale;
     private float maxLFPValue;
@@ -12,7 +13,7 @@ public class Electrode : MonoBehaviour
     private float currentTime;
     private int electrodeID;
 
-    public void SetElectrode(int id, float maxValue, float minValue)
+    public void SetElectrode(int id, float maxValue, float minValue, TissueParams paramInstance)
     {
         this.electrodeID = id;
         this.LFP = 0;
@@ -31,7 +32,7 @@ public class Electrode : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Constants.finishedInitialization)
+        if (Constants.finishedInitialization.TrueForAll(b => b))
         {
             this.currentTime += Time.deltaTime * Constants.timeScale;
             int currentTimeStep = Convert.ToInt32(Math.Floor(this.currentTime));

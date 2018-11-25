@@ -12,8 +12,7 @@ public class LocalFieldPotential
     {
         List<dynamic> LFPMat = jsonObj.ToObject<List<dynamic>>();
         List<float> innerList = LFPMat[0].ToObject<List<float>>();
-
-        //[electrode number, value]
+        
         LFPValues = new float[LFPMat.Count, innerList.Count];
         firstDimLength = LFPMat.Count;
         secondDimLength = innerList.Count;
@@ -23,7 +22,6 @@ public class LocalFieldPotential
             for (int j = 0; j < secondDimLength; j++)
             {
                 LFPValues[i, j] = innerList[j];
-                //Debug.Log("Parsed value:" + LFPValues[i, j].ToString());
             }
         }
         

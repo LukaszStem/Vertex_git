@@ -37,6 +37,10 @@ public class TissueParams
         //string hey = somevar.GetType().ToString();
         this.layerBoundaryArr = somevar.ToObject<List<float>>();
         this.groupBoundaryIDArr = jsonObj.groupBoundaryIDArr.ToObject<List<float>>();
+        if(Constants.GroupBoundaryIDArr.Count == 0)
+        {
+            Constants.GroupBoundaryIDArr = this.groupBoundaryIDArr;
+        }
         this.neuronCount = (float)jsonObj.N;
         List<dynamic> somaPositionMat = soma.ToObject<List<dynamic>>();
         somaPositionArr = new float[(int)this.neuronCount, 3];

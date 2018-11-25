@@ -33,9 +33,9 @@ public class Neuron : MonoBehaviour {
 
     private void SetColor()
     {
-        for(int i = 1; i < Constants.TissueData.groupBoundaryIDArr.Count; i++)
+        for(int i = 1; i < Constants.GroupBoundaryIDArr.Count; i++)
         {
-            if(this.NeuronID < Constants.TissueData.groupBoundaryIDArr[i])
+            if(this.NeuronID < Constants.GroupBoundaryIDArr[i])
             {
                 this.SpikingColor = Constants.NeuronColorList[i-1];
                 break;
