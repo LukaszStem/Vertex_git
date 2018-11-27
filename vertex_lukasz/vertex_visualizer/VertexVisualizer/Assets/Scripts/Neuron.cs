@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Neuron : MonoBehaviour {
 
+    
     private Color SpikingColor;
     private int NeuronID;
     private Material material;
@@ -50,6 +51,7 @@ public class Neuron : MonoBehaviour {
     {
         if(!this.spiking)
         {
+            //Debug.Log("Should see a spike!");
             this.spikeStartTime = Time.time;
             this.spiking = true;
         }

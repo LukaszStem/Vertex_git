@@ -10,14 +10,8 @@ using UnityEngine.UI;
 
 public class Startup : MonoBehaviour {
 
-    public GameObject tissueLayer;
-    public GameObject neuron;
-    public GameObject electrode;
-    public List<GameObject> tissueLayerList;
-    public SpikeData SpikeTimes { get; set; }
-
+    public GameObject tissueSlice;
     private float startTime;
-    private int currentSpikeIndex;
     public float timeScale = 1;
 
     //-------UI--------
@@ -30,6 +24,9 @@ public class Startup : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        Constants.timeScale = this.timeScale;
+        Constants.GroupBoundaryIDArr = new List<float>();
+        Constants.NeuronColorList = new List<Color>();
         this.keyHeldDown = "0";
         this.keyHeldDownPrev = "0";
         keys = new List<string>();
@@ -39,8 +36,10 @@ public class Startup : MonoBehaviour {
         for (int i = 0; i < FileManager.GetNumberOfTissueSlices(); i++)
         {
             Constants.finishedInitialization.Add(false);
-            TissueSlice slice = new TissueSlice(i, i * 3000);
-            Constants.TissueSlices.Add(slice);
+            GameObject obj = Instantiate(tissueSlice, new Vector3(0f,0f, 0f), Quaternion.identity);
+            TissueSlice slice = obj.GetComponent<TissueSlice>();
+            slice.Initialize(i, i*3000, 0f);
+            //Constants.TissueSlices.Add(slice);
         }
 
         this.holdingDownKey = false;

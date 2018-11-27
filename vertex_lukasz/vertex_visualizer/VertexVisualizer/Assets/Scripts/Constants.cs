@@ -7,8 +7,6 @@ public static class Constants {
     public static List<Color> NeuronColorList { get; set; }
     public static TissueParams TissueData { get; set; }
     public static List<float> GroupBoundaryIDArr { get; set; }
-
-    public static List<LocalFieldPotential>  LFPData { get; set; }
     public static List<TissueSlice> TissueSlices { get; set; }
     public static float timeScale { get; set; }
     public static List<bool> finishedInitialization { get; set; }

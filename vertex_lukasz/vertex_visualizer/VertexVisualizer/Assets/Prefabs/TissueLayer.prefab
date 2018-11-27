@@ -37,6 +37,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4912434943299456}
+  - component: {fileID: 114386255449157840}
   m_Layer: 0
   m_Name: TissueLayer
   m_TagString: Untagged
@@ -125,3 +126,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114386255449157840
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1976980903891630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55039b1d8db7c164391ac24db60f9037, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tissueLayer: {fileID: 1957951497713064}
+  neuron: {fileID: 1456907049150734, guid: 7b9ec326573b8b94483b2b16c67ca0d8, type: 2}
+  electrode: {fileID: 1343319510940206, guid: 38b50e4fc1a4c804abefe9ce1963e719, type: 2}
+  connection: {fileID: 1837986573856384, guid: ba3375cf86e7c074d8578dc4b1465a9c, type: 2}
+  NeuronList: []
+  ElectrodeList: []
+  tissueLayerList: []
+  connectionGroups: []
