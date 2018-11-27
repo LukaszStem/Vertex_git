@@ -391,13 +391,13 @@ ConnectionParams(6).synapseReleaseDelay = 0.5;
 
 %% Set up stimulation field
 %Stimulation amplitude 100 mV
-% [TissueParams.StimulationField, TissueParams.StimulationModel] = ... 
-%   invitroSliceStim('catvisblend1.stl',100);
+[TissueParams.StimulationField, TissueParams.StimulationModel] = ... 
+   invitroSliceStim('catvisblend1.stl',100);
 % 
-% startStimulationTime = 1000;
-% endStimulationTime = 1500;
-% pulseWidth = 25;
-% stimulationInterval = 1000/frequencyInHz;
+startStimulationTime = 1000;
+endStimulationTime = 1500;
+pulseWidth = 25;
+stimulationInterval = 1000/frequencyInHz;
 % 
 % remainder = mod(endStimulationTime-startStimulationTime, stimulationInterval);
 
@@ -408,8 +408,8 @@ ConnectionParams(6).synapseReleaseDelay = 0.5;
 %TissueParams.StimulationOn = [1000:50:1500];% 20 Hz stimulation
 %TissueParams.StimulationOff = [1025:50:1525];% pulse width of 25 ms
 
-%TissueParams.StimulationOn = [startStimulationTime:stimulationInterval:endStimulationTime];
-%TissueParams.StimulationOff = [startStimulationTime+pulseWidth:stimulationInterval:endStimulationTime+pulseWidth];% pulse width of 25 ms
+TissueParams.StimulationOn = [startStimulationTime:stimulationInterval:endStimulationTime];
+TissueParams.StimulationOff = [startStimulationTime+pulseWidth:stimulationInterval:endStimulationTime+pulseWidth];
 
 %% Recording and simulation settings
 % These are set in the same way as previous tutorials. This time we
@@ -417,7 +417,7 @@ ConnectionParams(6).synapseReleaseDelay = 0.5;
 
 RecordingSettings.saveDir = '~/VERTEX_results_tutorial_5/';
 RecordingSettings.LFP = true;
-[meaX, meaY, meaZ] = meshgrid(0:500:2000, 200, 2200:-100:0);
+[meaX, meaY, meaZ] = meshgrid(100:500:2100, 200, 1200:-100:0);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
@@ -428,7 +428,7 @@ RecordingSettings.sampleRate = 1000;
 
 SimulationSettings.simulationTime = 2500;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim = false;
+SimulationSettings.parallelSim = true;
 
 %For recording the weights of specific connections at each time step. 
 %We specify the presynaptic neuron IDs we wish to record from, we will

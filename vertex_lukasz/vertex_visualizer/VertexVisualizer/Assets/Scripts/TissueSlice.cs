@@ -32,6 +32,9 @@ public class TissueSlice : MonoBehaviour
     private int electrodeIndex;
     private Dictionary<int, int> weightMappings;
 
+    private int currentConnectionGroupIndex;
+    private bool selectingNextConnectionGroup;
+
     void CreateNeurons()
     {
         //NOTE: ensure NeuronColorList in constants is set first!!
@@ -65,10 +68,13 @@ public class TissueSlice : MonoBehaviour
                 //j = postNeurons.Length;
             }
             ConnectionGroup group = new ConnectionGroup();
-            group.CreateConnecitons(preNeuron, currentConnections);
+            if(i == 0)
+                group.CreateConnecitons(preNeuron, currentConnections, true);
+            else
+                group.CreateConnecitons(preNeuron, currentConnections, false);
             this.connectionGroups.Add(group);
             //Creating for just 1 neuron now
-            break;
+            //break;
         }
     }
 
@@ -170,6 +176,12 @@ public class TissueSlice : MonoBehaviour
         return stuff;
     }
 
+    void UpdateConnectionGroupText()
+    {
+        string text = "Switching to view connection group:" + this.currentConnectionGroupIndex + " with neuronID:" + this.connectionGroups[this.currentConnectionGroupIndex].neuronId.ToString();
+        //TODO:implement in seperate elements
+    }
+
     void InitializeObjectsFromJson()
     {
         dynamic VertexLFP = ParseJson(FileManager.GetLFPFile(this.tissueInstance));
@@ -212,6 +224,8 @@ public class TissueSlice : MonoBehaviour
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.electrodeIndex = 0;
+        this.currentConnectionGroupIndex = 0;
+        this.selectingNextConnectionGroup = false;
         InitializeObjectsFromJson();
         CreateTissueLayers();
         SetTissueLayerColors();
@@ -273,6 +287,36 @@ public class TissueSlice : MonoBehaviour
 
             this.startTime = endTime;
             
+        }
+    }
+
+    private void Update()
+    {
+        if (!this.selectingNextConnectionGroup && Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            this.selectingNextConnectionGroup = true;
+            this.connectionGroups[this.currentConnectionGroupIndex].setActive(false);
+            this.currentConnectionGroupIndex = (int)Mathf.Repeat((float)(this.currentConnectionGroupIndex - 1), (float)this.connectionGroups.Count);
+            this.connectionGroups[this.currentConnectionGroupIndex].setActive(true);
+            
+            Debug.Log("Switching to view connection group:" + this.currentConnectionGroupIndex + " with neuronID:" + this.connectionGroups[this.currentConnectionGroupIndex].neuronId.ToString());
+        }
+        else if(!this.selectingNextConnectionGroup && Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            this.selectingNextConnectionGroup = true;
+            this.connectionGroups[this.currentConnectionGroupIndex].setActive(false);
+            this.currentConnectionGroupIndex = (int)Mathf.Repeat((float)(this.currentConnectionGroupIndex + 1), (float)this.connectionGroups.Count);
+            this.connectionGroups[this.currentConnectionGroupIndex].setActive(true);
+
+            Debug.Log("Switching to view connection group:" + this.currentConnectionGroupIndex + " with neuronID:" + this.connectionGroups[this.currentConnectionGroupIndex].neuronId.ToString());
+        }
+        else if(this.selectingNextConnectionGroup && Input.GetKeyUp(KeyCode.RightArrow))
+        {
+            this.selectingNextConnectionGroup = false;
+        }
+        else if (this.selectingNextConnectionGroup && Input.GetKeyUp(KeyCode.LeftArrow))
+        {
+            this.selectingNextConnectionGroup = false;
         }
     }
 }

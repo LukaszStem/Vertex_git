@@ -5,4 +5,4 @@
 %[LFPValues50] = generateValues(50);
 %[LFPValues60] = generateValues(60);
 
-generateVertexVisualizerFolder('C:\Users\wassa\templol\NoHz', Results, connections);
+generateVertexVisualizerFolder('C:\Users\wassa\templol\NoHz2', Results, connections);
