@@ -871,7 +871,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tissueSlice: {fileID: 1976980903891630, guid: de27bd8219fd9cd4d861b89483a16151,
     type: 2}
-  timeScale: 10
+  timeScale: 1
   timeText: {fileID: 220211571}
   statusText: {fileID: 0}
 --- !u!4 &1697327437
@@ -1040,7 +1040,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2112827948}
-  - component: {fileID: 2112827947}
   m_Layer: 0
   m_Name: ConnectionGroup
   m_TagString: Untagged
@@ -1048,18 +1047,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2112827947
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2112827946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ece3d3544dd6bb47b1d4838feb15bd6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  neuronId: 0
 --- !u!4 &2112827948
 Transform:
   m_ObjectHideFlags: 0

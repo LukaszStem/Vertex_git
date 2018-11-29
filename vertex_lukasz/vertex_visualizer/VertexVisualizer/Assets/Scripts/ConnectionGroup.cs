@@ -6,12 +6,19 @@ public class ConnectionGroup
     private List<GameObject> connections;
     public int neuronId;
     private bool active;
-    public void CreateConnecitons(int neuronId, List<GameObject> connections, bool active)
+    public void CreateConnecitons(int neuronId, List<GameObject> connections)
     {
         this.neuronId = neuronId;
         this.connections = connections;
-        this.active = active;
-        alterAllConnections();
+    }
+
+    public void setWeightValues(WeightInfo info)
+    {
+        for(int i = 0; i < info.weight_mappings.Count; i++)
+        {
+            connections[i].GetComponent<Connection>().SetWeights(info.weight_mappings[i]);
+        }
+        this.setActive(false);
     }
 
     private void alterAllConnections()

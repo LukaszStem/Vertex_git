@@ -428,7 +428,7 @@ RecordingSettings.sampleRate = 1000;
 
 SimulationSettings.simulationTime = 2500;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim = true;
+SimulationSettings.parallelSim = false;
 
 %For recording the weights of specific connections at each time step. 
 %We specify the presynaptic neuron IDs we wish to record from, we will

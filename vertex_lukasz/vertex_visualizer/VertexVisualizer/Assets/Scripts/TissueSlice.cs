@@ -14,6 +14,7 @@ public class TissueSlice : MonoBehaviour
 
     public TissueParams TissueData;
     public ConnectionInfo ConnectionData;
+    public List<WeightInfo> WeightData;
     public GameObject[] NeuronList;
     public GameObject[] ElectrodeList;
     public RecordingSettings RecordingData;
@@ -30,7 +31,8 @@ public class TissueSlice : MonoBehaviour
     private float yOffset;
     private float xOffset;
     private int electrodeIndex;
-    private Dictionary<int, int> weightMappings;
+    private Dictionary<int, int> connectionMappings;
+    private List<int> weightMappings;
 
     private int currentConnectionGroupIndex;
     private bool selectingNextConnectionGroup;
@@ -47,35 +49,71 @@ public class TissueSlice : MonoBehaviour
         }
     }
 
+    dynamic ParseJson(string filename)
+    {
+        string myFileName = filename;
+        string json = "";
+        using (StreamReader r = new StreamReader(myFileName))
+        {
+            json = r.ReadToEnd();
+        }
+        int b = json.Length;
+        Debug.Log("Finished parsing through " + filename);
+        dynamic stuff = JsonConvert.DeserializeObject(json);
+        Debug.Log("Finished creating dynamic object");
+        Debug.Log(json.Length);
+        return stuff;
+    }
+
     void CreateConnections()
     {
         this.connectionGroups = new List<ConnectionGroup>();
-        for (int i = 0; i < weightMappings.Count; i++)
+        List<dynamic> VertexWeights = new List<dynamic>();
+        List<string> weightFiles = FileManager.GetWeightFiles(this.tissueInstance);
+        this.weightMappings = new List<int>();
+        float count = 0f;
+        foreach (int key in connectionMappings.Keys)
         {
-            int preNeuron = weightMappings[i + 1];
-            int[] postNeurons = this.ConnectionData.connection_mappings[i];
+            int preNeuron = connectionMappings[key];
+            int[] postNeurons = this.ConnectionData.connection_mappings[this.connectionGroups.Count];
             List<GameObject> currentConnections = new List<GameObject>();
-            for(int j = 0; j < postNeurons.Length; j++)
+            for (int j = 0; j < postNeurons.Length; j++)
             {
-                Vector3 preNeuronPos = new Vector3(this.TissueData.somaPositionArr[preNeuron-1, 0] + xOffset, this.TissueData.somaPositionArr[preNeuron-1, 1] + yOffset, this.TissueData.somaPositionArr[preNeuron-1, 2]);
-                Vector3 postNeuronPos = new Vector3(this.TissueData.somaPositionArr[postNeurons[j]-1, 0] + xOffset, this.TissueData.somaPositionArr[postNeurons[j]-1, 1] + yOffset, this.TissueData.somaPositionArr[postNeurons[j]-1, 2]);
+                Vector3 preNeuronPos = new Vector3(this.TissueData.somaPositionArr[preNeuron - 1, 0] + xOffset, this.TissueData.somaPositionArr[preNeuron - 1, 1] + yOffset, this.TissueData.somaPositionArr[preNeuron - 1, 2]);
+                Vector3 postNeuronPos = new Vector3(this.TissueData.somaPositionArr[postNeurons[j] - 1, 0] + xOffset, this.TissueData.somaPositionArr[postNeurons[j] - 1, 1] + yOffset, this.TissueData.somaPositionArr[postNeurons[j] - 1, 2]);
                 if (preNeuronPos.Equals(postNeuronPos))
                     continue;
                 GameObject obj = Instantiate(connection, new Vector3(0f, 0f, 0f), Quaternion.identity);
-                obj.GetComponent<Connection>().CreateConneciton(1f, preNeuronPos, postNeuronPos);
+                obj.GetComponent<Connection>().CreateConnections(1f, preNeuronPos, postNeuronPos);
                 currentConnections.Add(obj);
                 //Creating for just 1 connection now
                 //j = postNeurons.Length;
             }
             ConnectionGroup group = new ConnectionGroup();
-            if(i == 0)
-                group.CreateConnecitons(preNeuron, currentConnections, true);
-            else
-                group.CreateConnecitons(preNeuron, currentConnections, false);
+            //if (key == 10)
+            //    group.CreateConnecitons(preNeuron, currentConnections, true);
+            //else
+            //    group.CreateConnecitons(preNeuron, currentConnections, false);
+            group.CreateConnecitons(preNeuron, currentConnections);
+
+            //int indexOfConnections = connectionFiles[i].IndexOf("/connections")
+            string leftPath = weightFiles[this.connectionGroups.Count].Substring(0,weightFiles[this.connectionGroups.Count].IndexOf("\\weights") + 1);
+            //string weightSub = shortName.Substring("weights".Length, shortName.Length - ".json".Length - "weights".Length);
+            string fullPath = leftPath + "weights" + (preNeuron).ToString() + ".json";
+            Debug.Log("Full path");
+            //this.weightMappings.Add(Convert.ToInt32(weightSub));
+
+            WeightInfo info = new WeightInfo(ParseJson(fullPath));
+            //this.WeightData.Add(info);
+            group.setWeightValues(info);
+
+            //i = weightFiles.Count;
             this.connectionGroups.Add(group);
-            //Creating for just 1 neuron now
-            //break;
+            count++;
+            Constants.connectionsLoaded = count / connectionMappings.Keys.Count;
         }
+
+        this.connectionGroups[0].setActive(true);
     }
 
     void CreateElectrodes()
@@ -160,21 +198,7 @@ public class TissueSlice : MonoBehaviour
         }
     }
 
-    dynamic ParseJson(string filename)
-    {
-        string myFileName = filename;
-        string json = "";
-        using (StreamReader r = new StreamReader(myFileName))
-        {
-            json = r.ReadToEnd();
-        }
-        int b = json.Length;
-        Debug.Log("Finished parsing through " + filename);
-        dynamic stuff = JsonConvert.DeserializeObject(json);
-        Debug.Log("Finished creating dynamic object");
-        Debug.Log(json.Length);
-        return stuff;
-    }
+    
 
     void UpdateConnectionGroupText()
     {
@@ -188,7 +212,8 @@ public class TissueSlice : MonoBehaviour
         dynamic Vertexparams = ParseJson(FileManager.GetParamsFile(this.tissueInstance));
         dynamic Vertexspikes = ParseJson(FileManager.GetSpikesFile(this.tissueInstance));
         List<dynamic> VertexConnections = new List<dynamic>();
-        this.weightMappings = new Dictionary<int, int>();
+        List<dynamic> VertexWeights = new List<dynamic>();
+        this.connectionMappings = new Dictionary<int, int>();
         List<string> connectionFiles = FileManager.GetConnectionsFiles(this.tissueInstance);
         for(int i = 0; i < connectionFiles.Count; i++)
         {
@@ -200,10 +225,11 @@ public class TissueSlice : MonoBehaviour
             {
                 throw new Exception("Incorrect connection filenames!");
             }
-            this.weightMappings.Add(Convert.ToInt32(conMap[0]), Convert.ToInt32(conMap[1]));
+            this.connectionMappings.Add(Convert.ToInt32(conMap[0]), Convert.ToInt32(conMap[1]));
 
             VertexConnections.Add(ParseJson(connectionFiles[i]));
         }
+        
 
         dynamic myTissueParams = Vertexparams.TissueParams;
         dynamic myRecordingSettings = Vertexparams.RecordingSettings;
@@ -226,6 +252,7 @@ public class TissueSlice : MonoBehaviour
         this.electrodeIndex = 0;
         this.currentConnectionGroupIndex = 0;
         this.selectingNextConnectionGroup = false;
+        this.WeightData = new List<WeightInfo>();
         InitializeObjectsFromJson();
         CreateTissueLayers();
         SetTissueLayerColors();
@@ -286,6 +313,11 @@ public class TissueSlice : MonoBehaviour
             //Debug.Log("Change in time = " + Convert.ToString((Time.fixedDeltaTime * Constants.timeScale)));
 
             this.startTime = endTime;
+
+            if(this.tissueInstance == 0)
+            {
+                Constants.currentTime = this.startTime;
+            }
             
         }
     }

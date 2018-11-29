@@ -9,7 +9,10 @@ public static class Constants {
     public static List<float> GroupBoundaryIDArr { get; set; }
     public static List<TissueSlice> TissueSlices { get; set; }
     public static float timeScale { get; set; }
+    public static float currentTime { get; set; }
     public static List<bool> finishedInitialization { get; set; }
+
+    public static float connectionsLoaded = 0;
 
     public static void ChangeColor(GameObject obj, float alphaValue, float r = 0, float g = 0, float b = 0)
     {
