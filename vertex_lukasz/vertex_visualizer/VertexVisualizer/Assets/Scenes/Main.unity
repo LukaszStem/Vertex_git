@@ -489,8 +489,8 @@ Camera:
   m_GameObject: {fileID: 534669902}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 1}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
@@ -871,7 +871,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tissueSlice: {fileID: 1976980903891630, guid: de27bd8219fd9cd4d861b89483a16151,
     type: 2}
-  timeScale: 1
+  timeScale: 10
   timeText: {fileID: 220211571}
   statusText: {fileID: 0}
 --- !u!4 &1697327437

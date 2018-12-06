@@ -13,6 +13,7 @@ public class Connection : MonoBehaviour
     private float maxValue;
 
     private Color maxColor;
+    private Color halfColor;
     private Color minColor;
 
     private Material material;
@@ -33,9 +34,10 @@ public class Connection : MonoBehaviour
         this.transform.up = end - start;
         this.material = GetComponent<Renderer>().material;
         this.currentIndex = 0;
-        this.minColor = new Color(1, 1, 1);
-        this.maxColor = Color.magenta;
-        this.material.color = Color.yellow;
+        this.minColor = new Color(0f, 0f, 0f, 0f);
+        this.maxColor = Color.black;
+        this.halfColor = new Color(Color.grey.r, Color.grey.g, Color.grey.b, 0.5f);
+        this.material.color = Color.red;
     }
 
     public void SetWeights(float[,] values)
@@ -55,28 +57,45 @@ public class Connection : MonoBehaviour
             }
         }
         this.material.color = minColor;
+
+        //Set to almost transparent
+        if(this.weightValues.Length <= 2)
+        {
+            this.material.color = new Color(Color.cyan.r, Color.cyan.g, Color.cyan.b, 0.08f);
+            Debug.Log("this.weights for connection only has a length of 2 or less!");
+        }
     }
 
     void Update()
     {
-        if (Constants.finishedInitialization.TrueForAll(b => b))
-        {
             if (this.weightValues != null)
             {
-                float previousIndex = this.currentIndex;
-                while (this.currentIndex + 1 < this.weightValues.GetLength(1) && this.weightValues[0, this.currentIndex] < Constants.currentTime)
+                if (this.weightValues.Length > 2)
                 {
-                    this.currentIndex++;
-                }
+                    float previousIndex = this.currentIndex;
+                    while (this.currentIndex + 1 < this.weightValues.GetLength(1) && this.weightValues[0, this.currentIndex] < Constants.currentTime)
+                    {
+                        this.currentIndex++;
+                    }
 
-                if (previousIndex != this.currentIndex)
-                {
-                    float colorPercent = Mathf.InverseLerp(minValue, maxValue, this.weightValues[1, this.currentIndex]);
-
-                    Color lerpedColor = Color32.Lerp(minColor, maxColor, colorPercent);
-                    this.material.color = lerpedColor;
+                    if (previousIndex != this.currentIndex)
+                    {
+                        float maxIndex = this.weightValues.Length;
+                        float colorPercent = Mathf.InverseLerp(minValue, maxValue, this.weightValues[1, this.currentIndex]);
+                        Color lerpedColor = this.minColor;
+                        if (colorPercent <= 0.5)
+                        {
+                            lerpedColor = Color32.Lerp(minColor, halfColor, colorPercent*2);
+                        }
+                        else
+                        {
+                            lerpedColor = Color32.Lerp(halfColor, maxColor, (colorPercent * 2) - 1);
+                        }
+                        
+                        this.material.color = lerpedColor;
+                    }
                 }
             }
-        }
+        
     }
 }

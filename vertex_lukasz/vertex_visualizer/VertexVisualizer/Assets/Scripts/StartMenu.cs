@@ -19,12 +19,11 @@ public class StartMenu : MonoBehaviour {
         FileManager.Initialize(path);
         SceneManager.LoadScene("Main");
         //this.selectedPath = true;
-        
-
     }
 
     private void Update()
     {
+        //Not in use
         if(this.selectedPath)
         {
             if(loadScene == false)

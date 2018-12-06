@@ -1,5 +1,5 @@
-%function [LFPValues] =  generateValues( frequencyInHz )
-frequencyInHz = 10
+%function [Results] =  generateValues( frequencyInHz )
+frequencyInHz=10
 %% VERTEX Mini-Project
 % Please read the readme file for more details
 %
@@ -278,6 +278,8 @@ ConnectionParams(1).numConnectionsToAllFromOne{6} = [   0,    0,   25];
 % constants for the decay in weight change occuring when pre or post
 % synaptic neuron fires (tPre and tPost). We also specify a wmin and wmax
 % to apply upper and lower boundaries on the weight.
+
+%stdp parameters are set after general ConnectionParams specification
 ConnectionParams(1).synapseType = ...
   {'i_exp_stdp', 'i_exp', 'i_exp', 'i_exp', 'i_exp', 'i_exp'};
 ConnectionParams(1).targetCompartments = ...
@@ -286,16 +288,11 @@ ConnectionParams(1).targetCompartments = ...
    NeuronParams(5).dendritesID, NeuronParams(6).dendritesID};
 ConnectionParams(1).weights = {2, 30, 1, 15, 1, 15};
 ConnectionParams(1).tau = {2, 1, 2, 1, 2, 1};
-ConnectionParams(1).preRate{1} = -0.01;% 0.01;
-ConnectionParams(1).postRate{1} = 0.01;% 0.01;
-ConnectionParams(1).tPre{1} = 2;
-ConnectionParams(1).tPost{1} = 6;
-ConnectionParams(1).wmin{1} = 0.01;
-ConnectionParams(1).wmax{1} = 100;
 ConnectionParams(1).axonArborSpatialModel = 'gaussian';
 ConnectionParams(1).sliceSynapses = true;
 ConnectionParams(1).axonConductionSpeed = 0.3;
 ConnectionParams(1).synapseReleaseDelay = 0.5;
+
 
 %%
 % And now we set the connectivity parameters for the other neuron groups:
@@ -381,6 +378,21 @@ ConnectionParams(6).sliceSynapses = true;
 ConnectionParams(6).axonConductionSpeed = 0.3;
 ConnectionParams(6).synapseReleaseDelay = 0.5;
 
+%Setting stdp parameters
+for i = 1:length(ConnectionParams)
+    for j = 1:length(ConnectionParams(i).synapseType)
+       if ischar(ConnectionParams(i).synapseType{j}) ...
+           && contains(ConnectionParams(i).synapseType{j}, 'stdp', 'IgnoreCase', true)
+        ConnectionParams(i).preRate{j} = -0.01;
+        ConnectionParams(i).postRate{j} = 0.01;
+        ConnectionParams(i).tPre{j} = 2;
+        ConnectionParams(i).tPost{j} = 6;
+        ConnectionParams(i).wmin{j} = 0.01;
+        ConnectionParams(i).wmax{j} = 100;
+       end
+    end
+end
+
 %%
 % The connectivity statistics are influenced by the data in Binzegger et
 % al. 2004, while the weights are set arbitrarily to produce some
@@ -390,26 +402,29 @@ ConnectionParams(6).synapseReleaseDelay = 0.5;
 % parameters are set to be empty matrices.
 
 %% Set up stimulation field
-%Stimulation amplitude 100 mV
-[TissueParams.StimulationField, TissueParams.StimulationModel] = ... 
-   invitroSliceStim('catvisblend1.stl',100);
-% 
-startStimulationTime = 1000;
-endStimulationTime = 1500;
-pulseWidth = 25;
-stimulationInterval = 1000/frequencyInHz;
-% 
-% remainder = mod(endStimulationTime-startStimulationTime, stimulationInterval);
-
-% if remainder ~= 0 
-%     ME = MException('Difference in stimulate / (1000/frequencyInHz) != 0');
-%     thow(ME);
-
-%TissueParams.StimulationOn = [1000:50:1500];% 20 Hz stimulation
-%TissueParams.StimulationOff = [1025:50:1525];% pulse width of 25 ms
-
-TissueParams.StimulationOn = [startStimulationTime:stimulationInterval:endStimulationTime];
-TissueParams.StimulationOff = [startStimulationTime+pulseWidth:stimulationInterval:endStimulationTime+pulseWidth];
+% frequencyInHz = 0 signifies no stimulation
+if(frequencyInHz > 0)
+    %Stimulation amplitude 100 mV
+    [TissueParams.StimulationField, TissueParams.StimulationModel] = ...
+        invitroSliceStim('catvisblend1.stl',100);
+    %
+    startStimulationTime = 1000;
+    endStimulationTime = 1500;
+    pulseWidth = 25;
+    stimulationInterval = 1000/frequencyInHz;
+    %
+    % remainder = mod(endStimulationTime-startStimulationTime, stimulationInterval);
+    
+    % if remainder ~= 0
+    %     ME = MException('Difference in stimulate / (1000/frequencyInHz) != 0');
+    %     thow(ME);
+    
+    %TissueParams.StimulationOn = [1000:50:1500];% 20 Hz stimulation
+    %TissueParams.StimulationOff = [1025:50:1525];% pulse width of 25 ms
+    
+    TissueParams.StimulationOn = [startStimulationTime:stimulationInterval:endStimulationTime];
+    TissueParams.StimulationOff = [startStimulationTime+pulseWidth:stimulationInterval:endStimulationTime+pulseWidth];
+end
 
 %% Recording and simulation settings
 % These are set in the same way as previous tutorials. This time we
@@ -488,11 +503,6 @@ ylabel('Neuron ID')
 % 100 ms to 500 ms, so that spikes in the initial model population spike are not
 % counted.
 firingRates = groupRates(Results, 100, 500);
-
-%% Store local field potentials in workspace 
-%TODO: Have this in a standard array of some sort
-%
-LFPValues = Results.LFP;
 
 %%	
 % If you have experienced any problems when trying to run this code,	

@@ -29,6 +29,34 @@ public class Neuron : MonoBehaviour {
         this.emission = 0;
         this.justSpiked = false;
 
+        int lowerNeuronRange = 0;
+        int higherNeuronRange = 873;
+
+        if(this.NeuronID > lowerNeuronRange && this.NeuronID < higherNeuronRange)
+        {
+            float newXScale = this.transform.localScale.x * 3;
+            float newYScale = this.transform.localScale.y * 3;
+            float newZScale = this.transform.localScale.z * 3;
+
+            this.transform.localScale = new Vector3(newXScale, newYScale, newZScale);
+        }
+        else if(this.NeuronID == 874)
+        {
+            float newXScale = this.transform.localScale.x * 6;
+            float newYScale = this.transform.localScale.y * 6;
+            float newZScale = this.transform.localScale.z * 6;
+
+            this.transform.localScale = new Vector3(newXScale, newYScale, newZScale);
+        }
+        else if (this.NeuronID == 875)
+        {
+            float newXScale = this.transform.localScale.x * 9;
+            float newYScale = this.transform.localScale.y * 9;
+            float newZScale = this.transform.localScale.z * 9;
+
+            this.transform.localScale = new Vector3(newXScale, newYScale, newZScale);
+        }
+
         SetColor();
     }
 
