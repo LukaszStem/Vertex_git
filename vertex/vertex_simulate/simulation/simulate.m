@@ -78,10 +78,8 @@ if stdp
 end
 
 for simStep = 1:simulationSteps
-    
-    if isfield(TP, 'StimulationField')
-        current_time = simStep * SS.timeStep;
-        
+    current_time = simStep * SS.timeStep;
+    if isfield(TP, 'StimulationOff')
         if current_time > TP.StimulationOn(stimcount) && current_time < TP.StimulationOff(stimcount)
             for iGroup = 1:TP.numGroups
                 if  ~NeuronModel{iGroup}.incorporate_vext
@@ -117,6 +115,30 @@ for simStep = 1:simulationSteps
             end
             if stimcount < length(TP.StimulationOn)
                stimcount = stimcount+1;
+            end
+        end
+    elseif ~isfield(TP, 'StimulationOff') %tDCS
+        if current_time > TP.StimulationOn(1) && current_time < TP.StimulationOn(2)
+            for iGroup = 1:TP.numGroups
+                if  ~NeuronModel{iGroup}.incorporate_vext
+                    stimulationOn(NeuronModel{iGroup});
+                end
+                if isa(TP.StimulationField, 'pde.TimeDependentResults')
+                    setVext(NeuronModel{iGroup},NP(iGroup).V_ext_mat(:,:,timeStimStep));
+                end
+            end
+            timeStimStep = timeStimStep+1;
+            % reset timeStimStep if it gets passed the length of the
+            % time dimension in the stimulation field, this will loop
+            % back to the beginning of the time varying stimulation.
+            if timeStimStep > size(TP.StimulationField.NodalSolution,2)
+                timeStimStep = 1;
+            end
+        else
+            for iGroup = 1:TP.numGroups
+                if  NeuronModel{iGroup}.incorporate_vext
+                    stimulationOff(NeuronModel{iGroup});
+                end
             end
         end
     end

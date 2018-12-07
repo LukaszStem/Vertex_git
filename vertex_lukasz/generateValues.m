@@ -406,7 +406,7 @@ end
 if(frequencyInHz > 0)
     %Stimulation amplitude 100 mV
     [TissueParams.StimulationField, TissueParams.StimulationModel] = ...
-        invitroSliceStim('catvisblend1.stl',100);
+        invitroSliceStim('catvisblend1.stl', 100);
     %
     startStimulationTime = 1000;
     endStimulationTime = 1500;
@@ -422,8 +422,8 @@ if(frequencyInHz > 0)
     %TissueParams.StimulationOn = [1000:50:1500];% 20 Hz stimulation
     %TissueParams.StimulationOff = [1025:50:1525];% pulse width of 25 ms
     
-    TissueParams.StimulationOn = [startStimulationTime:stimulationInterval:endStimulationTime];
-    TissueParams.StimulationOff = [startStimulationTime+pulseWidth:stimulationInterval:endStimulationTime+pulseWidth];
+    TissueParams.StimulationOn = [startStimulationTime, endStimulationTime];
+    %TissueParams.StimulationOff = endStimulationTime;
 end
 
 %% Recording and simulation settings
@@ -441,7 +441,7 @@ RecordingSettings.minDistToElectrodeTip = 20;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 1000;
 
-SimulationSettings.simulationTime = 2500;
+SimulationSettings.simulationTime = 10000;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
 
