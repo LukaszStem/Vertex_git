@@ -1,5 +1,5 @@
 %function [Results] =  generateValues( frequencyInHz )
-frequencyInHz=10
+stimulationEnabled = true;
 %% VERTEX Mini-Project
 % Please read the readme file for more details
 %
@@ -403,15 +403,15 @@ end
 
 %% Set up stimulation field
 % frequencyInHz = 0 signifies no stimulation
-if(frequencyInHz > 0)
+if stimulationEnabled
     %Stimulation amplitude 100 mV
     [TissueParams.StimulationField, TissueParams.StimulationModel] = ...
         invitroSliceStim('catvisblend1.stl', 100);
     %
     startStimulationTime = 1000;
     endStimulationTime = 1500;
-    pulseWidth = 25;
-    stimulationInterval = 1000/frequencyInHz;
+    %pulseWidth = 25;
+    %stimulationInterval = 1000/frequencyInHz;
     %
     % remainder = mod(endStimulationTime-startStimulationTime, stimulationInterval);
     
@@ -448,7 +448,7 @@ SimulationSettings.parallelSim = false;
 %For recording the weights of specific connections at each time step. 
 %We specify the presynaptic neuron IDs we wish to record from, we will
 %receive the weights of all synapses from these cells.
-RecordingSettings.weights_preN_IDs = [1:100];
+RecordingSettings.weights_preN_IDs = [1:300];
 %For recording a snapshot of the weights of the entire network, we can
 %specify the simulation step of the time we wish to record the snapshot at.
 %So to calculate the recording step we can do:

@@ -7,8 +7,8 @@ averagePosition = [mean(positions(:, 1)), mean(positions(:, 2)), mean(positions(
 %Get appropriate weights
 weights = results.weights(neuronIds);
 
-%Allocate for rates
-rateOfSynapticChange = zeros(size(neuronIds, 2), 3);
+%Allocate for rates - last row will represent sum of colomns
+rateOfSynapticChange = zeros(size(neuronIds, 2) + 1, 3);
 
 for i=neuronIds 
     currentWeights = weights{i,1};
@@ -32,6 +32,14 @@ for i=neuronIds
     rateOfSynapticChange(i,3) = rateOfSynapticChange(i,1)+ rateOfSynapticChange(i,2);
 end
 
+%Increases in weight
+rateOfSynapticChange(end, 1) = sum(rateOfSynapticChange(1:end-1, 1));
+
+%Decreases in weight
+rateOfSynapticChange(end, 2) = sum(rateOfSynapticChange(1:end-1, 2));
+
+%Sum of all
+rateOfSynapticChange(end, 3) = sum(rateOfSynapticChange(1:end-1, 3));
 
 end
 
