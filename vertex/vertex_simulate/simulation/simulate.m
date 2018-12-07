@@ -117,7 +117,7 @@ for simStep = 1:simulationSteps
                stimcount = stimcount+1;
             end
         end
-    elseif ~isfield(TP, 'StimulationOff') %tDCS
+    elseif ~isfield(TP, 'StimulationOff') && isfield(TP, 'StimulationOn') %tDCS
         if current_time > TP.StimulationOn(1) && current_time < TP.StimulationOn(2)
             for iGroup = 1:TP.numGroups
                 if  ~NeuronModel{iGroup}.incorporate_vext
