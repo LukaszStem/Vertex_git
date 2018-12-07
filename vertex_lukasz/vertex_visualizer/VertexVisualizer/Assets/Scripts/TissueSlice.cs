@@ -99,7 +99,8 @@ public class TissueSlice : MonoBehaviour
             //int indexOfConnections = connectionFiles[i].IndexOf("/connections")
             string leftPath = weightFiles[this.connectionGroups.Count].Substring(0,weightFiles[this.connectionGroups.Count].IndexOf("\\weights") + 1);
             //string weightSub = shortName.Substring("weights".Length, shortName.Length - ".json".Length - "weights".Length);
-            string fullPath = leftPath + "weights" + (preNeuron).ToString() + ".json";
+            //Will need to modulo against minimum neuron ID
+            string fullPath = leftPath + "weights" + (preNeuron%799).ToString() + ".json";
             Debug.Log("Full path");
             //this.weightMappings.Add(Convert.ToInt32(weightSub));
 

@@ -441,14 +441,14 @@ RecordingSettings.minDistToElectrodeTip = 20;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 1000;
 
-SimulationSettings.simulationTime = 10000;
+SimulationSettings.simulationTime = 2500;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
 
 %For recording the weights of specific connections at each time step. 
 %We specify the presynaptic neuron IDs we wish to record from, we will
 %receive the weights of all synapses from these cells.
-RecordingSettings.weights_preN_IDs = [1:300];
+RecordingSettings.weights_preN_IDs = [800:873];
 %For recording a snapshot of the weights of the entire network, we can
 %specify the simulation step of the time we wish to record the snapshot at.
 %So to calculate the recording step we can do:

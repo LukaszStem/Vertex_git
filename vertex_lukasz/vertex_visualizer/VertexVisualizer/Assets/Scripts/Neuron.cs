@@ -28,9 +28,10 @@ public class Neuron : MonoBehaviour {
         this.material = GetComponent<Renderer>().material;
         this.emission = 0;
         this.justSpiked = false;
-
-        int lowerNeuronRange = 0;
-        int higherNeuronRange = 873;
+        
+        /* Not in use
+        int lowerNeuronRange = 99999;
+        int higherNeuronRange = 9999999;
 
         if(this.NeuronID > lowerNeuronRange && this.NeuronID < higherNeuronRange)
         {
@@ -56,6 +57,7 @@ public class Neuron : MonoBehaviour {
 
             this.transform.localScale = new Vector3(newXScale, newYScale, newZScale);
         }
+        */
 
         SetColor();
     }

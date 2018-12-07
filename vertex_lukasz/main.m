@@ -5,11 +5,11 @@
 %[LFPValues50] = generateValues(50);
 %[LFPValues60] = generateValues(60);
 
-%generateVertexVisualizerFolder('C:\Users\wassa\tdcs', Results, connections);
+generateVertexVisualizerFolder('C:\Users\wassa\smalltest', Results, connections);
 
-[rateOfChangeStim, avgPos] = ...
-    calculatePlasticityValue(Results_Stim, 1:100, 1:1000, 873)
+%[rateOfChangeStim, avgPos] = ...
+%    calculatePlasticityValue(Results_Stim, 1:100, 1:1000, 873)
 
-[rateOfChangeNoStim, avgPos] = ...
-    calculatePlasticityValue(Results_Stim, 1:100, 1:1000, 873)
+%[rateOfChangeNoStim, avgPos] = ...
+%    calculatePlasticityValue(Results_Stim, 1:100, 1:1000, 873)
 
