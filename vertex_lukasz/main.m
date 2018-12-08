@@ -1,11 +1,21 @@
-%[results] = generateValues(10);
-%[LFPValues20] = generateValues(20);
-%[LFPValues30] = generateValues(30);
-%[LFPValues40] = generateValues(40);
-%[LFPValues50] = generateValues(50);
-%[LFPValues60] = generateValues(60);
+dirPath = "directory path"
+randomSeeds = [50, 100, 150, 200]
+neuronIdSets = [1, 436, 437, 873]
 
-generateVertexVisualizerFolder('C:\Users\wassa\smalltest', Results, connections);
+%generateValues( stimulationEnabled, preNeuronIds, randomSeed, fileName )
+
+for i = 1:size(randomSeeds, 2)
+    fileName = strcat(dirPath, num2str(randomSeeds(i)), "_");
+    generateValues(false, neuronIdSets(1):neuronIdSets(2), randomSeeds(i), ...
+        strcat(fileName, num2str(neuronIdSets(1)), "-", num2str(neuronIdSets(2))));
+    clearvars -except dirPath randomSeeds neuronIdSets filename
+    generateValues(false, neuronIdSets(3):neuronIdSets(4), randomSeeds(i), ...
+        strcat(fileName, num2str(neuronIdSets(3)), "-", num2str(neuronIdSets(4))));
+    clearvars -except dirPath randomSeeds neuronIdSets filename
+end
+
+
+%generateVertexVisualizerFolder('C:\Users\wassa\smalltest', Results, connections);
 
 %[rateOfChangeStim, avgPos] = ...
 %    calculatePlasticityValue(Results_Stim, 1:100, 1:1000, 873)

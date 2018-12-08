@@ -1,5 +1,4 @@
-%function [Results] =  generateValues( frequencyInHz )
-stimulationEnabled = true;
+function [] =  generateValues( stimulationEnabled, preNeuronIds, randomSeed, fileName )
 %% VERTEX Mini-Project
 % Please read the readme file for more details
 %
@@ -445,10 +444,12 @@ SimulationSettings.simulationTime = 2500;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
 
+SimulationSettings.randomSeed = randomSeed;
+
 %For recording the weights of specific connections at each time step. 
 %We specify the presynaptic neuron IDs we wish to record from, we will
 %receive the weights of all synapses from these cells.
-RecordingSettings.weights_preN_IDs = [800:873];
+RecordingSettings.weights_preN_IDs = preNeuronIds;
 %For recording a snapshot of the weights of the entire network, we can
 %specify the simulation step of the time we wish to record the snapshot at.
 %So to calculate the recording step we can do:
@@ -466,43 +467,10 @@ RecordingSettings.weights_arr = [1 totalRecordingSteps];
 runSimulation(params, connections, electrodes);
 Results = loadResults(RecordingSettings.saveDir);
 
-%% Plot the results
-% Using these parameters, we obtain the following spike raster:
-rasterParams.colors = {'k','m','k','m','k','m'};
-rasterParams.groupBoundaryLines = 'c';
-rasterParams.title = 'Tutorial 5 Spike Raster';
-rasterParams.xlabel = 'Time (ms)';
-rasterParams.ylabel = 'Neuron ID';
-rasterParams.figureID = 1;
-rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 
-%%
-% Plotting the LFP and weight change during stimulation
-figure;plot(Results.LFP(10,:), 'LineWidth', 2);
-axis([100 3000 -0.025 0.05]) % only plot from 100 ms to remove large initial spike
-set(gcf,'color','w');
-set(gca, 'FontSize', 16);
-title('LFP and weight change during stimulation', 'FontSize', 16)
-xlabel('Time (ms)', 'FontSize', 16)
-ylabel('LFP (mV)', 'FontSize', 16)
-yyaxis right;
-plot(mean(Results.weights{4}(1:100,:)), 'LineWidth',2);
-ylabel('Mean synaptic weight (pA)');
+%% Save results to local file
 
-%% Plot the weight change of all cells
-time1weights = getSparseConnectivityWeights(Results.weights_arr{1},Results.syn_arr,Results.params.TissueParams.N);
-time2weights = getSparseConnectivityWeights(Results.weights_arr{2},Results.syn_arr,Results.params.TissueParams.N);
-figure;imagesc(time2weights-time1weights);
-title('Synaptic connectivity changes')
-xlabel('Neuron ID') 
-ylabel('Neuron ID') 
-
-%%
-% Finally let's check the mean firing rate of each neuron group using the
-% |groupRates()| function. We will ask for the rates to be calculated from
-% 100 ms to 500 ms, so that spikes in the initial model population spike are not
-% counted.
-firingRates = groupRates(Results, 100, 500);
+save(fileName, 'Results', '-v7.3');
 
 %%	
 % If you have experienced any problems when trying to run this code,	
@@ -517,4 +485,4 @@ firingRates = groupRates(Results, 100, 500);
 % comparing multi-electrode recordings from simulated and biological	
 % mammalian cortical tissue, Brain Structure and Function.	
 % doi:10.1007/s00429-014-0793-x
-%end
+end
