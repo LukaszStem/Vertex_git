@@ -1,4 +1,4 @@
-function [rateOfSynapticChange, averagePosition] = calculatePlasticityValue(results, neuronIds, timeRange, layerBound) %Possibly add connectionDistance percentage? 
+function [rateOfSynapticChange, averagePosition] = calculatePlasticityValue(results, neuronIds, connections, timeRange, layerBound) %Possibly add connectionDistance percentage? 
 
 %Get average position of somas
 positions = results.params.TissueParams.somaPositionMat(neuronIds, :);
@@ -14,9 +14,21 @@ for i=neuronIds
     currentWeights = weights{i,1};
     rowSize = size(currentWeights,1);
     
+    neuronConnections = connections{i,1}';
+    
+    cutoffPoint = -1;
+    for k=1:size(neuronConnections,1)
+        if(neuronConnections(k) > layerBound)
+           cutoffPoint = k;
+           fprintf("Neuron %i: cutoffPoint is at %i with an ID of %i\n\n",i, k, neuronConnections(k));
+           break;
+        end
+    end
+    
+    
     %Remove connections to other layers
-    if(rowSize > layerBound)
-        currentWeights([layerBound:rowSize],:) = [];
+    if(cutoffPoint ~= -1)
+        currentWeights(cutoffPoint:rowSize,:) = [];
     end
     
     %Simply takes the difference of the mean of the weights of all

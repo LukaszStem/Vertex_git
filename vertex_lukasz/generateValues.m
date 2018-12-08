@@ -407,7 +407,7 @@ if stimulationEnabled
     [TissueParams.StimulationField, TissueParams.StimulationModel] = ...
         invitroSliceStim('catvisblend1.stl', 100);
     %
-    startStimulationTime = 1000;
+    startStimulationTime = 10000;
     endStimulationTime = 1500;
     %pulseWidth = 25;
     %stimulationInterval = 1000/frequencyInHz;
@@ -469,8 +469,8 @@ Results = loadResults(RecordingSettings.saveDir);
 
 
 %% Save results to local file
-
-save(fileName, 'Results', '-v7.3');
+save(strcat(fileName, ".mat"), 'Results', '-v7.3');
+save(strcat(fileName, "Connections.mat"), 'connections', '-v7.3');
 
 %%	
 % If you have experienced any problems when trying to run this code,	
