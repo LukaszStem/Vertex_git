@@ -16,7 +16,7 @@ neuronIdSets = [1, 873]
 %     clearvars -except i dirPath randomSeeds neuronIdSets fileName
 % end
 
-numberOfPoints = 100;
+numberOfPoints = 10000;
 resolution = 10000/numberOfPoints;
 
 currentStartTime = 0;
@@ -37,8 +37,8 @@ for i = 1:2
         [rateOfChangeStim, avgPos] = ...
             calculatePlasticityValue(Results, 1:873, connections, numberOfPoints, 10000, 873);
         for y=1:numberOfPoints-1
-            rates(i, j, y, 1) = rateOfChangeStim(y, end, 1);
-            rates(i, j, y, 2) = rateOfChangeStim(y, end, 2);
+            rates(i, j, y, 1) = rateOfChangeStim(y, end, 1); %Summed synaptic increment
+            rates(i, j, y, 2) = rateOfChangeStim(y, end, 2); %Summed synaptic decrement
             rates(i, j, y, 3) = rateOfChangeStim(y, end, 3);
         end
         clearvars Results connections
@@ -47,12 +47,39 @@ for i = 1:2
     end
 end
 
+%% plot values
+start = 1500;
+x = start:numberOfPoints-1;
+increments = zeros([1, (numberOfPoints-start)]);
+decrements = zeros([1, (numberOfPoints-start)]);
+finalValues = zeros([1, (numberOfPoints-start)]);
+for i=1:2
+    for y= start:numberOfPoints-1
+        tmpIncrement = 0;
+        tmpDecrement = 0;
+        tmpFinal = 0;
+        for j = 1:4
+           tmpIncrement = tmpIncrement + rates(i, j, y, 1);
+           tmpDecrement = tmpDecrement + rates(i, j, y, 2);
+           tmpFinal = tmpFinal + rates(i, j, y, 3);
+        end
+        indx = y-start+1;
+        increments(indx) = tmpIncrement/4;
+        decrements(indx) = tmpDecrement/4;
+        if indx > 1
+            finalValues(indx) = tmpFinal/4 + finalValues(indx-1);
+        else
+            finalValues(indx) = tmpFinal/4;
+        end
+    end
+    plot(x, increments, 'r', 'LineWidth', 2);
+    hold on;
+    plot(x, decrements, 'b', 'LineWidth', 2);
+    figure;
+end
 
-%generateVertexVisualizerFolder('C:\Users\wassa\smalltest', Results, connections);
 
-%[rateOfChangeStim, avgPos] = ...
-%    calculatePlasticityValue(Results_Stim, 1:100, 1:1000, 873)
 
-%[rateOfChangeNoStim, avgPos] = ...
-%    calculatePlasticityValue(Results_Stim, 1:100, 1:1000, 873)
+
+
 

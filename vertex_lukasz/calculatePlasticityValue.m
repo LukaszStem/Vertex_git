@@ -34,19 +34,23 @@ for i=neuronIds
     
     %Simply takes the difference of the mean of the weights of all
     %connections at the endtime and starttime
-    for y=1:numberOfPoints
-        endTime = y * resolution;
-        startTime = endTime - (resolution - 1);
+    for y=2:numberOfPoints
+        %endTime = y * resolution;
+        %startTime = endTime - (resolution - 1);
         %fprintf("startime:%i endtime:%i\n", startTime, endTime)
-        for k=startTime+1:endTime
-            timeRangeIncrementMean = mean(currentWeights(:, k)) - mean(currentWeights(:, k-1));
+        %for k=startTime+1:endTime
+            timeRangeIncrementMean = mean(currentWeights(:, y)) - mean(currentWeights(:, y-1));
             if timeRangeIncrementMean > 0
                 rateOfSynapticChange(y, i, 1) = rateOfSynapticChange(y, i, 1) + timeRangeIncrementMean;
             else
                 rateOfSynapticChange(y, i, 2) = rateOfSynapticChange(y, i, 2) + timeRangeIncrementMean;
             end
+        %end
+        rateOfSynapticChange(y,i,3) = rateOfSynapticChange(y,i,1)+ rateOfSynapticChange(y,i,2);
+        if rateOfSynapticChange(y, i,3) > 1
+            fprintf("rateOfSynapticChange:%i", rateOfSynapticChange(y, i,3))
         end
-        rateOfSynapticChange(y, i,3) = rateOfSynapticChange(y,i,1)+ rateOfSynapticChange(y,i,2);
+        
     end
 end
 
