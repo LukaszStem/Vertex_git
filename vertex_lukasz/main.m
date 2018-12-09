@@ -1,4 +1,4 @@
-dirPath = "C:\Users\b8054586\Desktop\"
+dirPath = "C:\Users\weirdluki21\Downloads\"
 randomSeeds = [50, 100, 150, 200]
 neuronIdSets = [1, 873]
 
@@ -27,22 +27,23 @@ rates = zeros([2, size(randomSeeds, 2), numberOfPoints-1, 3]);
 
 for i = 1:2
     for j = 1:size(randomSeeds, 2)
+        fprintf("Starting anaylsis with i:%i, j:%i\n", i, j)
+        
         fileName = strcat(dirPath, num2str(randomSeeds(j)), "_");
         resultsFile = strcat(fileName, num2str(neuronIdSets(1)), "-", num2str(neuronIdSets(2)), stimVec(i), ".mat");
         connectionsFile = strcat(fileName, num2str(neuronIdSets(1)), "-", num2str(neuronIdSets(2)), stimVec(i), "Connections.mat");
         load(resultsFile);
         load(connectionsFile);
-        for k=1:numberOfPoints-1
-            startTime = resolution * k;
-            [rateOfChangeStim, avgPos] = ...
-                calculatePlasticityValue(Results, 1:873, connections, startTime:startTime + resolution, 873);
-            
-            rates(i, j, k, 1) = rateOfChangeStim(end,1);
-            rates(i, j, k, 2) = rateOfChangeStim(end,2);
-            rates(i, j, k, 3) = rateOfChangeStim(end,3);
+        [rateOfChangeStim, avgPos] = ...
+            calculatePlasticityValue(Results, 1:873, connections, numberOfPoints, 10000, 873);
+        for y=1:numberOfPoints-1
+            rates(i, j, y, 1) = rateOfChangeStim(y, end, 1);
+            rates(i, j, y, 2) = rateOfChangeStim(y, end, 2);
+            rates(i, j, y, 3) = rateOfChangeStim(y, end, 3);
         end
-        
         clearvars Results connections
+        
+        fprintf("Finished anaylsis with i:%i, j:%i\n", i, j)
     end
 end
 
