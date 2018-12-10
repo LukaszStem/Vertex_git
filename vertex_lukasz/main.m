@@ -48,7 +48,7 @@ for i = 1:2
 end
 
 %% plot values
-start = 1500;
+start = 50;
 x = start:numberOfPoints-1;
 increments = zeros([1, (numberOfPoints-start)]);
 decrements = zeros([1, (numberOfPoints-start)]);
@@ -72,10 +72,18 @@ for i=1:2
             finalValues(indx) = tmpFinal/4;
         end
     end
-    plot(x, increments, 'r', 'LineWidth', 2);
-    hold on;
-    plot(x, decrements, 'b', 'LineWidth', 2);
     figure;
+    yyaxis left;
+    plot(x, increments, 'r-');
+    ylabel('Average change');
+    hold on;
+    plot(x, decrements, 'b-');
+    yyaxis right
+    plot(x, finalValues)
+    ylabel('Total change')
+    % Add title and x axis label
+    xlabel('Time in milliseconds')
+    title('Frequency Response')
 end
 
 

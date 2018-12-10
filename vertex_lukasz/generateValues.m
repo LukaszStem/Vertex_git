@@ -1,4 +1,5 @@
 function [] =  generateValues( stimulationEnabled, preNeuronIds, randomSeed, fileName )
+
 %% VERTEX Mini-Project
 % Please read the readme file for more details
 %
@@ -407,7 +408,7 @@ if stimulationEnabled
     [TissueParams.StimulationField, TissueParams.StimulationModel] = ...
         invitroSliceStim('catvisblend1.stl', 100);
     %
-    startStimulationTime = 10000;
+    startStimulationTime = 1000;
     endStimulationTime = 1500;
     %pulseWidth = 25;
     %stimulationInterval = 1000/frequencyInHz;
@@ -485,4 +486,4 @@ save(strcat(fileName, "Connections.mat"), 'connections', '-v7.3');
 % comparing multi-electrode recordings from simulated and biological	
 % mammalian cortical tissue, Brain Structure and Function.	
 % doi:10.1007/s00429-014-0793-x
-end
+% end
