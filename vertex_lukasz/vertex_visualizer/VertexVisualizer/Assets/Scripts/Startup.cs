@@ -56,6 +56,13 @@ public class Startup : MonoBehaviour {
             
             this.startTime = endTime;
             timeText.text = "Time:" + this.startTime.ToString("0.00");
+
+            //Temp
+            if(this.timeScale != 1f && this.startTime > 950f)
+            {
+                Constants.timeScale = 1f;
+                this.timeScale = Constants.timeScale;
+            }
         }
     }
 }

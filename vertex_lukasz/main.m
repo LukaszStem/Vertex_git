@@ -2,19 +2,19 @@ dirPath = "C:\Users\weirdluki21\Downloads\"
 randomSeeds = [50, 100, 150, 200]
 neuronIdSets = [1, 873]
 
-% for i = 1:size(randomSeeds, 2)
-%     fileName = strcat(dirPath, num2str(randomSeeds(i)), "_");
-%     
-%     % With stimulation
-%     generateValues(true, neuronIdSets(1):neuronIdSets(2), randomSeeds(i), ...
-%         strcat(fileName, num2str(neuronIdSets(1)), "-", num2str(neuronIdSets(2)), "Stim"));
-%     clearvars -except i dirPath randomSeeds neuronIdSets fileName
-%     
-%     % Without stimulation
-%     generateValues(false, neuronIdSets(1):neuronIdSets(2), randomSeeds(i), ...
-%         strcat(fileName, num2str(neuronIdSets(1)), "-", num2str(neuronIdSets(2)), "NoStim"));
-%     clearvars -except i dirPath randomSeeds neuronIdSets fileName
-% end
+for i = 1:size(randomSeeds, 2)
+    fileName = strcat(dirPath, num2str(randomSeeds(i)), "_");
+    
+    % With stimulation
+    generateValues(true, neuronIdSets(1):neuronIdSets(2), randomSeeds(i), ...
+        strcat(fileName, num2str(neuronIdSets(1)), "-", num2str(neuronIdSets(2)), "Stim"));
+    clearvars -except i dirPath randomSeeds neuronIdSets fileName
+    
+    % Without stimulation
+    generateValues(false, neuronIdSets(1):neuronIdSets(2), randomSeeds(i), ...
+        strcat(fileName, num2str(neuronIdSets(1)), "-", num2str(neuronIdSets(2)), "NoStim"));
+    clearvars -except i dirPath randomSeeds neuronIdSets fileName
+end
 
 numberOfPoints = 10000;
 resolution = 10000/numberOfPoints;
@@ -48,6 +48,7 @@ for i = 1:2
 end
 
 %% plot values
+close all;
 start = 50;
 x = start:numberOfPoints-1;
 increments = zeros([1, (numberOfPoints-start)]);
@@ -75,15 +76,24 @@ for i=1:2
     figure;
     yyaxis left;
     plot(x, increments, 'r-');
-    ylabel('Average change');
+    ylabel('Average instantaneous change');
     hold on;
     plot(x, decrements, 'b-');
+    %ylim([-0.03 0.06])
+    ylim([-0.1 0.2])
     yyaxis right
     plot(x, finalValues)
-    ylabel('Total change')
+    
+    set(gcf,'Color','w')
+    ylabel('Summed change')
     % Add title and x axis label
     xlabel('Time in milliseconds')
-    title('Frequency Response')
+    ylim([0 17])
+    if i == 1
+        title('STDP with tDCS')
+    else
+        title('STDP without tDCS')
+    end
 end
 
 

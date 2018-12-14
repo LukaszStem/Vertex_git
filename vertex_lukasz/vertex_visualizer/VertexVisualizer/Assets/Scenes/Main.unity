@@ -871,7 +871,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tissueSlice: {fileID: 1976980903891630, guid: de27bd8219fd9cd4d861b89483a16151,
     type: 2}
-  timeScale: 1
+  timeScale: 10
   timeText: {fileID: 220211571}
   statusText: {fileID: 0}
 --- !u!4 &1697327437

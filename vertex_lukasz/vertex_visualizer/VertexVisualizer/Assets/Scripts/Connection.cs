@@ -61,7 +61,7 @@ public class Connection : MonoBehaviour
         //Set to almost transparent
         if(this.weightValues.Length <= 2)
         {
-            this.material.color = Color.cyan;
+            this.material.color = new Color(Color.cyan.r, Color.cyan.g, Color.cyan.b, 0.5f);
             Debug.Log("this.weights for connection only has a length of 2 or less!");
         }
     }
