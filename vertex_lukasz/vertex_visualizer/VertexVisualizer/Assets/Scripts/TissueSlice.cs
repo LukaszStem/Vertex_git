@@ -91,10 +91,10 @@ public class TissueSlice : MonoBehaviour
             }
             ConnectionGroup group = new ConnectionGroup();
             //if (key == 10)
-            //    group.CreateConnecitons(preNeuron, currentConnections, true);
+            //    group.CreateConnections(preNeuron, currentConnections, true);
             //else
-            //    group.CreateConnecitons(preNeuron, currentConnections, false);
-            group.CreateConnecitons(preNeuron, currentConnections);
+            //    group.CreateConnections(preNeuron, currentConnections, false);
+            group.CreateConnections(preNeuron, currentConnections);
 
             //int indexOfConnections = connectionFiles[i].IndexOf("/connections")
             string leftPath = weightFiles[this.connectionGroups.Count].Substring(0,weightFiles[this.connectionGroups.Count].IndexOf("\\weights") + 1);
