@@ -1,4 +1,4 @@
-fileSuffix = "C:\Users\wassa\VertexOutput"
+fileSuffix = "C:\demo\vertex_output\file"
 % randomSeeds = [50, 100, 150, 200]
 randomSeeds = [50]
 neuronIdSets = [1, 100]
@@ -9,12 +9,12 @@ for i = 1:size(randomSeeds, 2)
     % With stimulation
     generateValues(true, neuronIdSets(1):neuronIdSets(2), randomSeeds(i), ...
         strcat(fileName, num2str(neuronIdSets(1)), "-", num2str(neuronIdSets(2)), "Stim"));
-    clearvars -except i dirPath randomSeeds neuronIdSets fileName
+    clearvars -except i fileSuffix randomSeeds neuronIdSets fileName
     
     % Without stimulation
     generateValues(false, neuronIdSets(1):neuronIdSets(2), randomSeeds(i), ...
         strcat(fileName, num2str(neuronIdSets(1)), "-", num2str(neuronIdSets(2)), "NoStim"));
-    clearvars -except i dirPath randomSeeds neuronIdSets fileName
+    clearvars -except i fileSuffix randomSeeds neuronIdSets fileName
 end
 
 % numberOfPoints = 10000;
