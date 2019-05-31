@@ -1,10 +1,10 @@
-dirPath = "C:\Users\wassa\VertexOutput"
+fileSuffix = "C:\Users\wassa\VertexOutput"
 % randomSeeds = [50, 100, 150, 200]
 randomSeeds = [50]
 neuronIdSets = [1, 100]
 
 for i = 1:size(randomSeeds, 2)
-    fileName = strcat(dirPath, num2str(randomSeeds(i)), "_");
+    fileName = strcat(fileSuffix, num2str(randomSeeds(i)), "_");
     
     % With stimulation
     generateValues(true, neuronIdSets(1):neuronIdSets(2), randomSeeds(i), ...
